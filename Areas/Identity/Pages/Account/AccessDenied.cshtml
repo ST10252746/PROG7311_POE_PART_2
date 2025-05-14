@@ -1,0 +1,250 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #00674b;
+        --secondary: #00AB66;
+        --tertiary: #00A693;
+        --accent: #34AD54;
+        --light: #F6FFF2;
+        --white: #ffffff;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+        --dark-text: #343a40;
+        --danger: #dc3545;
+        --danger-light: #f8d7da;
+        --danger-dark: #842029;
+    }
+
+    .access-denied-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        text-align: center;
+        padding: 0 15px;
+    }
+
+    .access-denied-card {
+        background-color: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
+        padding: 0;
+        max-width: 600px;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+    .access-denied-header {
+        background-color: var(--danger-light);
+        padding: 25px 30px;
+        position: relative;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        text-align: center;
+    }
+
+    .access-denied-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        background-color: var(--danger);
+    }
+
+    .access-denied-header h1 {
+        color: var(--danger-dark);
+        font-size: 1.75rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .access-denied-body {
+        padding: 30px;
+    }
+
+    .access-denied-icon {
+        font-size: 5rem;
+        color: var(--danger);
+        margin-bottom: 20px;
+    }
+
+    .access-denied-message {
+        color: var(--dark-text);
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .access-denied-info {
+        background-color: var(--light-gray);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid var(--primary);
+    }
+
+    .access-denied-info p {
+        margin: 0;
+        color: var(--dark-text);
+    }
+
+    .btn-back-home {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(0, 103, 75, 0.2);
+        text-decoration: none;
+    }
+
+    .btn-back-home:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 103, 75, 0.3);
+        color: white;
+    }
+
+    .btn-back-home i {
+        margin-right: 8px;
+    }
+
+</style>
+<!-- Topbar Start -->
+<div class="container-fluid px-5 d-none d-lg-block">
+    <div class="row gx-5 py-3 align-items-center">
+        <div class="col-lg-3">
+            <div class="d-flex align-items-center justify-content-start">
+                <i class="bi bi-phone-vibrate fs-1 text-primary me-2"></i>
+                <h2 class="mb-0">+031 123 6789</h2>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="d-flex align-items-center justify-content-center">
+                <a href="index.html" class="navbar-brand ms-lg-5">
+                    <h1 class="m-0 display-4 text-primary"><span class="text-secondary">Agri-Energy</span>Connect</h1>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="d-flex align-items-center justify-content-end">
+                <a class="btn btn-primary btn-square rounded-circle me-2" href="#"><i class="fab fa-twitter"></i></a>
+                <a class="btn btn-primary btn-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                <a class="btn btn-primary btn-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a class="btn btn-primary btn-square rounded-circle" href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Topbar End -->
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+    <a href="index.html" class="navbar-brand d-flex d-lg-none">
+        <h1 class="m-0 display-4 text-secondary"><span class="text-white">Agri</span>Energy</h1>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/about" class="nav-item nav-link">About</a>
+            <a href="/contact" class="nav-item nav-link">Contact</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            <a href="/educationalresources" class="nav-item nav-link">Training & Resources</a>
+            <a href="/projectfunding" class="nav-item nav-link">Projects & Funding</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown active">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" style="background: linear-gradient(rgba(0, 103, 75, .9), rgba(0, 103, 75, .9)), url(/img/carousel-1.jpg) center center no-repeat; background-size: cover;">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Access Denied</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Access Denied</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="access-denied-container">
+        <div class="access-denied-card">
+            <div class="access-denied-header">
+                <h1>Access Denied</h1>
+            </div>
+            
+            <div class="access-denied-body">
+                <div class="access-denied-icon">
+                    <i class="fa fa-lock"></i>
+                </div>
+                
+                <div class="access-denied-message">
+                    You do not have permission to access this resource. This area may be restricted to users with specific roles or permissions.
+                </div>
+                
+                <div class="access-denied-info">
+                    <p>
+                        <i class="fa fa-info-circle me-2"></i>
+                        If you believe you should have access to this page, please contact your administrator or try logging in with an account that has the appropriate permissions.
+                    </p>
+                </div>
+                
+                <a href="/" class="btn-back-home">
+                    <i class="fa fa-home"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

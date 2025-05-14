@@ -1,0 +1,251 @@
+﻿<!-- Views/Farmer/Products.cshtml -->
+@model IEnumerable<ST10252746_PROG7311_POE_PART_2.Models.Product>
+@{
+    ViewData["Title"] = "My Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Calculate some statistics for the dashboard
+    int totalProducts = Model.Count();
+    int organicProducts = Model.Count(p => p.Category?.Contains("Organic") == true);
+    int recentProducts = Model.Count(p => p.ProductionDate >= DateTime.Now.AddMonths(-1));
+    var categories = Model.Select(p => p.Category).Distinct().Count();
+}
+
+
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" style="background: linear-gradient(rgba(0, 103, 75, .9), rgba(0, 103, 75, .9)), url(/img/carousel-1.jpg) center center no-repeat; background-size: cover;">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Farmer Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">My Products</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="farmer-container">
+        <!-- Sidebar Navigation -->
+        <div class="farmer-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="farmer-avatar">
+                        <i class="fa fa-user-circle"></i>
+                    </div>
+                    Farmer Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Farmer/Products">
+                        <i class="fa fa-leaf"></i> My Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Farmer/CreateProduct">
+                        <i class="fa fa-plus-circle"></i> Add New Product
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Farmer/Profile">
+                        <i class="fa fa-user"></i> My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Marketplace">
+                        <i class="fa fa-store"></i> Marketplace
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Farmer/Products" class="list-group-item list-group-item-action active">
+                            <i class="fa fa-leaf me-2"></i> My Products
+                        </a>
+                        <a href="/Farmer/CreateProduct" class="list-group-item list-group-item-action">
+                            <i class="fa fa-plus-circle me-2"></i> Add New Product
+                        </a>
+                        <a href="/Farmer/Profile" class="list-group-item list-group-item-action">
+                            <i class="fa fa-user me-2"></i> My Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="farmer-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>My Products</h1>
+                <p>Manage and showcase your agricultural products</p>
+                <div class="page-divider"></div>
+            </div>
+            
+            <!-- Dashboard Stats -->
+            <div class="stats-container">
+                <div class="stat-card total">
+                    <div class="stat-icon">
+                        <i class="fa fa-boxes"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@totalProducts</h3>
+                        <p>Total Products</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card categories">
+                    <div class="stat-icon">
+                        <i class="fa fa-tags"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@categories</h3>
+                        <p>Categories</p>
+                    </div>
+                </div>
+                
+                @* <div class="stat-card organic">
+                    <div class="stat-icon">
+                        <i class="fa fa-seedling"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@organicProducts</h3>
+                        <p>Organic Products</p>
+                    </div>
+                </div> *@
+                
+                <div class="stat-card recent">
+                    <div class="stat-icon">
+                        <i class="fa fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@recentProducts</h3>
+                        <p>Added This Month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons text-end mb-4">
+                <a asp-action="CreateProduct" class="btn btn-add-product">
+                    <i class="fa fa-plus"></i> Add New Product
+                </a>
+            </div>
+            
+            <!-- Products Listing -->
+            @if (!Model.Any())
+            {
+                <div class="no-products">
+                    <i class="fa fa-seedling"></i>
+                    <h4>No Products Yet</h4>
+                    <p>You haven't added any products to your inventory. Start showcasing your agricultural products to potential buyers.</p>
+                    <a asp-action="CreateProduct" class="btn btn-add-product">
+                        <i class="fa fa-plus"></i> Add Your First Product
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="products-grid">
+                    @foreach (var item in Model)
+                    {
+                        <div class="product-card">
+                            <div class="product-image">
+                                @if (!string.IsNullOrEmpty(item.Category))
+                                {
+                                    <div class="product-category">@item.Category</div>
+                                }
+                                @if (!string.IsNullOrEmpty(item.ImageUrlPath))
+                                {
+                                    <img src="@item.ImageUrlPath" alt="@item.Name">
+                                }
+                                else
+                                {
+                                    <img src="/img/placeholder.jpg" alt="@item.Name">
+                                }
+                            </div>
+                            <div class="product-details">
+                                <h5 class="product-title">@item.Name</h5>
+                                <div class="product-info">
+                                    <p><i class="fa fa-calendar"></i> @item.ProductionDate.ToShortDateString()</p>
+                                </div>
+                                <div class="product-description">
+                                    @item.Description
+                                </div>
+                                <div class="product-actions">
+                                    <a asp-action="EditProduct" asp-route-id="@item.ProductId" class="btn btn-edit">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                    <a asp-action="DeleteProduct" asp-route-id="@item.ProductId" class="btn btn-delete">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,318 @@
+﻿<!-- Views/Farmer/EditProduct.cshtml -->
+@model ST10252746_PROG7311_POE_PART_2.Models.Product
+@{
+    ViewData["Title"] = "Edit Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Farmer Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" href="/Farmer/Products">My Products</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Edit Product</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="farmer-container">
+        <!-- Sidebar Navigation -->
+        <div class="farmer-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="farmer-avatar">
+                        <i class="fa fa-user-circle"></i>
+                    </div>
+                    Farmer Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Farmer/Products">
+                        <i class="fa fa-leaf"></i> My Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Farmer/CreateProduct">
+                        <i class="fa fa-plus-circle"></i> Add New Product
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Farmer/Profile">
+                        <i class="fa fa-user"></i> My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Marketplace">
+                        <i class="fa fa-store"></i> Marketplace
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Farmer/Products" class="list-group-item list-group-item-action active">
+                            <i class="fa fa-leaf me-2"></i> My Products
+                        </a>
+                        <a href="/Farmer/CreateProduct" class="list-group-item list-group-item-action">
+                            <i class="fa fa-plus-circle me-2"></i> Add New Product
+                        </a>
+                        <a href="/Farmer/Profile" class="list-group-item list-group-item-action">
+                            <i class="fa fa-user me-2"></i> My Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="farmer-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Edit Product</h1>
+                <p>Update information for your existing product</p>
+                <div class="page-divider"></div>
+            </div>
+            
+            
+            <!-- Edit Product Form -->
+            <div class="form-card">
+                <form asp-action="EditProduct" enctype="multipart/form-data">
+                    <!-- Hidden Fields -->
+                    <input type="hidden" asp-for="ProductId" />
+                    <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="ImageUrlPath" />
+                    
+                    <!-- Validation Summary -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert-validation">
+                            <strong><i class="fa fa-exclamation-circle"></i> Please fix the following errors:</strong>
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                        </div>
+                    }
+                    
+                    <!-- Product Information Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">
+                            <i class="fa fa-info-circle"></i> Product Information
+                        </h5>
+                        
+                        <div class="form-group">
+                            <label asp-for="Name" class="form-label">
+                                <i class="fa fa-tag"></i> Product Name <span class="required-indicator">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter product name" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="Description" class="form-label">
+                                <i class="fa fa-align-left"></i> Description <span class="required-indicator">*</span>
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your product in detail" required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Classification Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">
+                            <i class="fa fa-sitemap"></i> Classification
+                        </h5>
+                        
+                        <div class="form-group">
+                            <label asp-for="Category" class="form-label">
+                                <i class="fa fa-folder"></i> Category <span class="required-indicator">*</span>
+                            </label>
+                            <select asp-for="Category" class="form-select" required>
+                                <option value="">Select a category</option>
+                                <option value="Solar Irrigation">Solar Irrigation Systems</option>
+                                <option value="Wind Turbines">Wind Turbines</option>
+                                <option value="Biomass Energy Systems">Biomass Energy Systems</option>
+                                <option value="Solar Panels">Solar Panels</option>
+                                <option value="Hydropower Systems">Hydropower Systems</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ProductionDate" class="form-label">
+                                <i class="fa fa-calendar-alt"></i> Production Date <span class="required-indicator">*</span>
+                            </label>
+                            <input asp-for="ProductionDate" class="form-control" type="date" required />
+                            <span asp-validation-for="ProductionDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Media Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">
+                            <i class="fa fa-image"></i> Product Media
+                        </h5>
+                        
+                        <div class="form-group">
+                            <label for="imageFile" class="form-label">
+                                <i class="fa fa-upload"></i> Product Image
+                            </label>
+                            
+                            @if (!string.IsNullOrEmpty(Model.ImageUrlPath))
+                            {
+                                <div class="image-preview-container">
+                                    <img src="@Model.ImageUrlPath" alt="@Model.Name" class="image-preview">
+                                    <div class="image-preview-overlay">
+                                        <span class="image-preview-label">Current Image</span>
+                                    </div>
+                                </div>
+                            }
+                            
+                            <div class="file-input-container">
+                                <div class="file-input-button">
+                                    <i class="fa fa-cloud-upload-alt"></i> Choose New Image
+                                    <input type="file" name="imageFile" id="imageFile" accept="image/*" onchange="previewNewImage(this)" />
+                                </div>
+                                <span class="file-name" id="fileName">No file chosen</span>
+                            </div>
+                            <div class="form-text">Upload a new image to replace the current one (optional). Leave empty to keep the current image.</div>
+                            
+                            <div id="newImagePreviewContainer" style="display: none; margin-top: 15px;">
+                                <p class="mb-2"><strong>New Image Preview:</strong></p>
+                                <img id="newImagePreview" src="#" alt="New Image Preview" class="img-fluid rounded" style="max-height: 200px;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Buttons -->
+                    <div class="form-buttons">
+                        <a asp-action="Products" class="btn btn-farmer-secondary">
+                            <i class="fa fa-arrow-left"></i> Back to Products
+                        </a>
+                        <button type="submit" class="btn btn-farmer-primary">
+                            <i class="fa fa-save"></i> Update Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Add client-side validation to ensure required fields are filled
+        $(document).ready(function () {
+            $('form').submit(function (e) {
+                // Clear previous error messages
+                $('.field-validation-error').empty();
+
+                // Validate Name
+                if ($('#Name').val() === '') {
+                    $('#Name').siblings('.field-validation-error').text('Name is required.');
+                    e.preventDefault();
+                }
+
+                // Validate Description
+                if ($('#Description').val() === '') {
+                    $('#Description').siblings('.field-validation-error').text('Description is required.');
+                    e.preventDefault();
+                }
+
+                // Validate Category
+                if ($('#Category').val() === '') {
+                    $('#Category').siblings('.field-validation-error').text('Please select a category.');
+                    e.preventDefault();
+                }
+
+                // Validate Production Date
+                if ($('#ProductionDate').val() === '') {
+                    $('#ProductionDate').siblings('.field-validation-error').text('Production date is required.');
+                    e.preventDefault();
+                }
+            });
+        });
+        
+        // Function to preview new image
+        function previewNewImage(input) {
+            var fileName = input.files[0] ? input.files[0].name : "No file chosen";
+            document.getElementById('fileName').textContent = fileName;
+            
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    document.getElementById('newImagePreview').src = e.target.result;
+                    document.getElementById('newImagePreviewContainer').style.display = 'block';
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

@@ -1,0 +1,263 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    :root {
+        --green-dark: #115631;
+        --green-mid: #5e8c38;
+        --green-leaf: #618a47;
+        --green-deep: #006400;
+        --green-fresh: #228B22;
+        --white: #ffffff;
+        --grey-light: #f8f9fa;
+        --grey-text: #444;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: var(--grey-light);
+        color: var(--grey-text);
+    }
+
+    .login-container {
+        max-width: 400px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background-color: var(--white);
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--green-dark);
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        background-color: var(--green-mid);
+        color: var(--white);
+        padding: 0.75rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        input[type="submit"]:hover {
+            background-color: var(--green-leaf);
+        }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+        .form-check input {
+            margin-right: 0.5rem;
+        }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-link {
+        color: var(--green-deep);
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+        .text-link:hover {
+            color: var(--green-fresh);
+        }
+</style>
+
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" s>
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Account Login</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Login</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="login-container">
+    <h2>Log in</h2>
+
+    <form method="post">
+        <div>
+            <label asp-for="Input.Email">Email</label>
+            <input asp-for="Input.Email" type="text" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label asp-for="Input.Password">Password</label>
+            <input asp-for="Input.Password" type="password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-check">
+            <input asp-for="Input.RememberMe" type="checkbox" />
+            <label asp-for="Input.RememberMe">Remember me</label>
+        </div>
+
+        <input type="submit" value="Log in" />
+
+        <div class="text-center" style="margin-top: 1rem;">
+            <a asp-page="./ForgotPassword" class="text-link">Forgot your password?</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Function to toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password-field');
+            const passwordToggleIcon = document.getElementById('password-toggle-icon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordToggleIcon.classList.remove('fa-eye');
+                passwordToggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordToggleIcon.classList.remove('fa-eye-slash');
+                passwordToggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Add animation and interactive elements when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus the email field automatically when page loads
+            setTimeout(() => {
+                const emailInput = document.querySelector('input[type="email"]');
+                if (emailInput) {
+                    emailInput.focus();
+                }
+            }, 800);
+            
+            // Interactive logo
+            const logoIcon = document.querySelector('.logo-icon');
+            if (logoIcon) {
+                logoIcon.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05) rotate(5deg)';
+                });
+                
+                logoIcon.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0deg)';
+                });
+            }
+            
+            // Input field animations
+            const formInputs = document.querySelectorAll('.form-control');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-3px)';
+                    this.parentElement.style.transition = 'transform 0.3s ease';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Button hover effect
+            const submitButton = document.getElementById('login-submit');
+            if (submitButton) {
+                submitButton.addEventListener('mouseover', function() {
+                    this.style.transform = 'translateY(-3px)';
+                    this.style.boxShadow = '0 12px 25px rgba(0, 171, 102, 0.4)';
+                });
+                
+                submitButton.addEventListener('mouseout', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            }
+        });
+    </script>
+}

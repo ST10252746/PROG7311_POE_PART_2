@@ -1,0 +1,363 @@
+﻿<!-- Views/Farmer/Profile.cshtml -->
+@model ST10252746_PROG7311_POE_PART_2.Models.ApplicationUser
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" >
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Farmer Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">My Profile</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="farmer-container">
+        <!-- Sidebar Navigation -->
+        <div class="farmer-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="farmer-avatar">
+                        <i class="fa fa-user-circle"></i>
+                    </div>
+                    Farmer Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Farmer/Products">
+                        <i class="fa fa-leaf"></i> My Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Farmer/CreateProduct">
+                        <i class="fa fa-plus-circle"></i> Add New Product
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Farmer/Profile">
+                        <i class="fa fa-user"></i> My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Marketplace">
+                        <i class="fa fa-store"></i> Marketplace
+                    </a>
+                </li> 
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Farmer/Products" class="list-group-item list-group-item-action">
+                            <i class="fa fa-leaf me-2"></i> My Products
+                        </a>
+                        <a href="/Farmer/CreateProduct" class="list-group-item list-group-item-action">
+                            <i class="fa fa-plus-circle me-2"></i> Add New Product
+                        </a>
+                        <a href="/Farmer/Profile" class="list-group-item list-group-item-action active">
+                            <i class="fa fa-user me-2"></i> My Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="farmer-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>My Profile</h1>
+                <p>Manage your personal information and account settings</p>
+                <div class="page-divider"></div>
+            </div>
+            
+            <!-- Personal Information Section -->
+            <div class="profile-card">
+                <h4 class="profile-card-title">
+                    <i class="fa fa-user-edit"></i>Personal Information
+                </h4>
+                
+                <form asp-action="UpdateProfile" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Firstname" class="form-label">
+                                    <i class="fa fa-user"></i> First Name
+                                </label>
+                                <input asp-for="Firstname" class="form-control" placeholder="Enter your first name" />
+                                <span asp-validation-for="Firstname" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Lastname" class="form-label">
+                                    <i class="fa fa-user"></i> Last Name
+                                </label>
+                                <input asp-for="Lastname" class="form-control" placeholder="Enter your last name" />
+                                <span asp-validation-for="Lastname" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label">
+                            <i class="fa fa-envelope"></i> Email Address
+                        </label>
+                        <input asp-for="Email" class="form-control" readonly />
+                        <div class="form-text">Your email address cannot be changed</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber" class="form-label">
+                            <i class="fa fa-phone"></i> Contact Number
+                        </label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Enter your contact number"
+                               pattern="^\d{10}$" minlength="10" maxlength="10"
+                               title="Please enter a 10-digit phone number (e.g. 0123456789)" required />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="Location" class="form-label">
+                            <i class="fa fa-map-marker-alt"></i> Location
+                        </label>
+                        <input asp-for="Location" class="form-control" placeholder="Enter your location" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-farmer-primary">
+                            <i class="fa fa-save"></i> Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Password Section -->
+            <div class="profile-card">
+                <h4 class="profile-card-title">
+                    <i class="fa fa-lock"></i>Update Password
+                </h4>
+                
+                @if (TempData["PasswordChangeSuccess"] != null)
+                {
+                    <div class="alert-custom alert-success-custom">
+                        <i class="fa fa-check-circle"></i>
+                        <div>
+                            <strong>Success!</strong> @TempData["PasswordChangeSuccess"]
+                        </div>
+                    </div>
+                }
+                
+                @if (TempData["PasswordChangeError"] != null)
+                {
+                    <div class="alert-custom alert-danger-custom">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <div>
+                            <strong>Error!</strong> @TempData["PasswordChangeError"]
+                        </div>
+                    </div>
+                }
+                
+                <form asp-action="UpdatePassword" method="post">
+                    <div class="form-group">
+                        <label for="NewPassword" class="form-label">
+                            <i class="fa fa-key"></i> New Password
+                        </label>
+                        <input type="password" id="NewPassword" name="NewPassword" class="form-control" required />
+                        <div class="password-strength-meter mt-2">
+                            <div class="password-strength-value" id="passwordStrengthMeter"></div>
+                        </div>
+                        <div class="strength-text" id="passwordStrengthText">Password strength</div>
+                        <div class="form-text mt-2">
+                            Password must be at least 6 characters long and contain uppercase letters, lowercase letters, numbers, and special characters.
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ConfirmPassword" class="form-label">
+                            <i class="fa fa-check-circle"></i> Confirm New Password
+                        </label>
+                        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+                        <div class="form-text" id="passwordMatchMessage"></div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-farmer-primary">
+                            <i class="fa fa-lock"></i> Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // Validate password confirmation
+            $("#ConfirmPassword").on("keyup", function () {
+                var newPassword = $("#NewPassword").val();
+                var confirmPassword = $(this).val();
+                var matchMessage = $("#passwordMatchMessage");
+
+                if (newPassword != confirmPassword) {
+                    $(this).get(0).setCustomValidity("Passwords do not match");
+                    matchMessage.text("Passwords do not match").css("color", "#dc3545");
+                } else {
+                    $(this).get(0).setCustomValidity("");
+                    matchMessage.text("Passwords match").css("color", "#00AB66");
+                }
+            });
+
+            // Check password requirements and update strength meter
+            $("#NewPassword").on("keyup", function () {
+                var password = $(this).val();
+                var strength = 0;
+                var strengthMeter = $("#passwordStrengthMeter");
+                var strengthText = $("#passwordStrengthText");
+
+                // Reset strength meter
+                strengthMeter.removeClass("strength-weak strength-fair strength-good strength-strong");
+                
+                if (password.length === 0) {
+                    strengthMeter.css("width", "0%");
+                    strengthText.text("Password strength");
+                    strengthText.css("color", "#6c757d");
+                    return;
+                }
+
+                // Check length
+                if (password.length >= 6) {
+                    strength += 1;
+                }
+
+                // Check for uppercase letters
+                if (password.match(/[A-Z]/)) {
+                    strength += 1;
+                }
+
+                // Check for lowercase letters
+                if (password.match(/[a-z]/)) {
+                    strength += 1;
+                }
+
+                // Check for numbers
+                if (password.match(/[0-9]/)) {
+                    strength += 1;
+                }
+
+                // Check for special characters
+                if (password.match(/[^a-zA-Z0-9]/)) {
+                    strength += 1;
+                }
+
+                // Update strength meter based on strength
+                if (strength < 2) {
+                    strengthMeter.addClass("strength-weak");
+                    strengthText.text("Weak").css("color", "#dc3545");
+                    $(this).get(0).setCustomValidity("Password is too weak");
+                } 
+                else if (strength < 3) {
+                    strengthMeter.addClass("strength-fair");
+                    strengthText.text("Fair").css("color", "#ffc107");
+                    $(this).get(0).setCustomValidity("Password is too weak");
+                }
+                else if (strength < 5) {
+                    strengthMeter.addClass("strength-good");
+                    strengthText.text("Good").css("color", "#34AD54");
+                    $(this).get(0).setCustomValidity("");
+                }
+                else {
+                    strengthMeter.addClass("strength-strong");
+                    strengthText.text("Strong").css("color", "#00AB66");
+                    $(this).get(0).setCustomValidity("");
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function (e) {
+            const phoneInput = document.querySelector("[name='PhoneNumber']");
+            const phonePattern = /^\d{10}$/;
+
+            if (!phonePattern.test(phoneInput.value)) {
+                e.preventDefault();
+                alert("Please enter a valid 10-digit phone number (e.g. 0123456789).");
+                phoneInput.focus();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,216 @@
+﻿<!-- Views/Admin/Employees.cshtml -->
+@model IEnumerable<ST10252746_PROG7311_POE_PART_2.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Employees";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Calculate statistics for dashboard
+    int totalEmployees = Model.Count();
+}
+
+
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" >
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Admin Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Employees</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <div class="admin-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="admin-avatar">
+                        <i class="fa fa-user-shield"></i>
+                    </div>
+                    Admin Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Admin/Employees">
+                        <i class="fa fa-users-cog"></i> Employees
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Admin/CreateEmployee">
+                        <i class="fa fa-user-plus"></i> Add New Employee
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Admin/Employees" class="list-group-item list-group-item-action active">
+                            <i class="fa fa-users-cog me-2"></i> Employees
+                        </a>
+                        <a href="/Admin/CreateEmployee" class="list-group-item list-group-item-action">
+                            <i class="fa fa-user-plus me-2"></i> Add New Employee
+                        </a>
+                        <a href="/Admin/SystemSettings" class="list-group-item list-group-item-action">
+                            <i class="fa fa-cogs me-2"></i> System Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="admin-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Employees</h1>
+                <p>Manage system employees with administrative access</p>
+                <div class="page-divider"></div>
+            </div>
+            
+            <!-- Dashboard Stats -->
+            <div class="stats-container">
+                <div class="stat-card total">
+                    <div class="stat-icon">
+                        <i class="fa fa-users-cog"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@totalEmployees</h3>
+                        <p>Total Employees</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card system">
+                    <div class="stat-icon">
+                        <i class="fa fa-shield-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@(totalEmployees > 0 ? "Active" : "Inactive")</h3>
+                        <p>System Status</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card active">
+                    <div class="stat-icon">
+                        <i class="fa fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@totalEmployees</h3>
+                        <p>Active Accounts</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a asp-action="CreateEmployee" class="btn btn-add-employee">
+                    <i class="fa fa-user-plus"></i> Add New Employee
+                </a>
+            </div>
+            
+            <!-- Employees Listing -->
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="fa fa-users-cog"></i>
+                    <h4>No Employees Yet</h4>
+                    <p>No employees have been added yet. Click the button below to get started.</p>
+                    <a asp-action="CreateEmployee" class="btn btn-add-employee">
+                        <i class="fa fa-user-plus"></i> Add Your First Employee
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="employees-table-container">
+                    <div class="table-responsive">
+                        <table class="employees-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fa fa-user me-2"></i> Name</th>
+                                    <th><i class="fa fa-envelope me-2"></i> Email</th>
+                                    <th><i class="fa fa-cogs me-2"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td data-label="Name">@item.Firstname @item.Lastname</td>
+                                        <td data-label="Email">@item.Email</td>
+                                        <td data-label="Actions">
+                                            <a asp-action="DeleteEmployee" asp-route-id="@item.Id" class="btn btn-delete">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,382 @@
+﻿<!-- Views/Employee/CreateFarmer.cshtml -->
+@model ST10252746_PROG7311_POE_PART_2.Models.RegisterFarmerViewModel
+@{
+    ViewData["Title"] = "Add New Farmer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" style="background: linear-gradient(rgba(0, 103, 75, .9), rgba(0, 103, 75, .9)), url(/img/carousel-1.jpg) center center no-repeat; background-size: cover;">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Employee Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" href="/Employee/Farmers">Farmers</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Add New Farmer</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="employee-container">
+        <!-- Sidebar Navigation -->
+        <div class="employee-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="employee-avatar">
+                        <i class="fa fa-user-tie"></i>
+                    </div>
+                    Employee Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Products">
+                        <i class="fa fa-box"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Farmers">
+                        <i class="fa fa-users"></i> Farmers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Employee/CreateFarmer">
+                        <i class="fa fa-user-plus"></i> Add New Farmer
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Employee/Products" class="list-group-item list-group-item-action">
+                            <i class="fa fa-box me-2"></i> Products
+                        </a>
+                        <a href="/Employee/Farmers" class="list-group-item list-group-item-action">
+                            <i class="fa fa-users me-2"></i> Farmers
+                        </a>
+                        <a href="/Employee/CreateFarmer" class="list-group-item list-group-item-action active">
+                            <i class="fa fa-user-plus me-2"></i> Add New Farmer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="employee-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Add New Farmer</h1>
+                <p>Create a new farmer account on the platform</p>
+                <div class="page-divider"></div>
+            </div>
+            
+            <!-- Form Card -->
+            <div class="form-card">
+                <form asp-action="CreateFarmer">
+                    <!-- Validation Summary -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert-validation">
+                            <strong><i class="fa fa-exclamation-circle"></i> Please fix the following errors:</strong>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        </div>
+                    }
+                    
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">
+                            <i class="fa fa-user"></i> Personal Information
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Firstname" class="form-label">
+                                        <i class="fa fa-user"></i> First Name <span class="required-indicator">*</span>
+                                    </label>
+                                    <input asp-for="Firstname" class="form-control" placeholder="Enter first name" />
+                                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Lastname" class="form-label">
+                                        <i class="fa fa-user"></i> Last Name <span class="required-indicator">*</span>
+                                    </label>
+                                    <input asp-for="Lastname" class="form-control" placeholder="Enter last name" />
+                                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">
+                            <i class="fa fa-address-book"></i> Contact Information
+                        </h5>
+                        
+                        <div class="form-group">
+                            <label asp-for="Email" class="form-label">
+                                <i class="fa fa-envelope"></i> Email Address <span class="required-indicator">*</span>
+                            </label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="form-label">
+                                <i class="fa fa-phone"></i> Phone Number
+                            </label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number"
+                                   pattern="^0\d{9}$" title="Phone number must be 10 digits starting with 0" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="Location" class="form-label">
+                                <i class="fa fa-map-marker-alt"></i> Location
+                            </label>
+                            <input asp-for="Location" class="form-control" placeholder="Enter location" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Security Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">
+                            <i class="fa fa-lock"></i> Account Security
+                        </h5>
+                        
+                        <div class="form-group">
+                            <label asp-for="Password" class="form-label">
+                                <i class="fa fa-key"></i> Password <span class="required-indicator">*</span>
+                            </label>
+                            <div class="password-field-container">
+                                <input asp-for="Password" class="form-control" id="password-field" type="password" placeholder="Enter password" />
+                                <span class="password-toggle" onclick="togglePasswordVisibility('password-field', 'password-toggle-icon')">
+                                    <i class="fa fa-eye" id="password-toggle-icon"></i>
+                                </span>
+                            </div>
+                            <div class="password-strength-meter mt-2">
+                                <div class="password-strength-value" id="passwordStrengthMeter"></div>
+                            </div>
+                            <div class="strength-text" id="passwordStrengthText">Password strength</div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ConfirmPassword" class="form-label">
+                                <i class="fa fa-check-circle"></i> Confirm Password <span class="required-indicator">*</span>
+                            </label>
+                            <div class="password-field-container">
+                                <input asp-for="ConfirmPassword" class="form-control" id="confirm-password-field" type="password" placeholder="Confirm password" />
+                                <span class="password-toggle" onclick="togglePasswordVisibility('confirm-password-field', 'confirm-password-toggle-icon')">
+                                    <i class="fa fa-eye" id="confirm-password-toggle-icon"></i>
+                                </span>
+                            </div>
+                            <div class="form-text" id="passwordMatchMessage"></div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Buttons -->
+                    <div class="form-buttons">
+                        <a asp-action="Farmers" class="btn btn-employee-secondary">
+                            <i class="fa fa-arrow-left"></i> Back to Farmers
+                        </a>
+                        <button type="submit" class="btn btn-employee-primary">
+                            <i class="fa fa-user-plus"></i> Create Farmer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Function to toggle password visibility
+        function togglePasswordVisibility(fieldId, iconId) {
+            const passwordField = document.getElementById(fieldId);
+            const passwordToggleIcon = document.getElementById(iconId);
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordToggleIcon.classList.remove('fa-eye');
+                passwordToggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordToggleIcon.classList.remove('fa-eye-slash');
+                passwordToggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Password strength checker
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordField = document.getElementById('password-field');
+            const confirmPasswordField = document.getElementById('confirm-password-field');
+            const passwordStrengthMeter = document.getElementById('passwordStrengthMeter');
+            const passwordStrengthText = document.getElementById('passwordStrengthText');
+            const passwordMatchMessage = document.getElementById('passwordMatchMessage');
+            
+            // Check password strength
+            passwordField.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Reset strength meter
+                passwordStrengthMeter.className = 'password-strength-value';
+                
+                if (password.length === 0) {
+                    passwordStrengthMeter.style.width = '0%';
+                    passwordStrengthText.textContent = 'Password strength';
+                    passwordStrengthText.style.color = '#6c757d';
+                    return;
+                }
+                
+                // Length check
+                if (password.length >= 8) {
+                    strength += 1;
+                }
+                
+                // Uppercase check
+                if (password.match(/[A-Z]/)) {
+                    strength += 1;
+                }
+                
+                // Lowercase check
+                if (password.match(/[a-z]/)) {
+                    strength += 1;
+                }
+                
+                // Number check
+                if (password.match(/[0-9]/)) {
+                    strength += 1;
+                }
+                
+                // Special character check
+                if (password.match(/[^a-zA-Z0-9]/)) {
+                    strength += 1;
+                }
+                
+                // Update strength meter
+                if (strength <= 1) {
+                    passwordStrengthMeter.classList.add('strength-weak');
+                    passwordStrengthText.textContent = 'Weak';
+                    passwordStrengthText.style.color = '#dc3545';
+                } 
+                else if (strength <= 2) {
+                    passwordStrengthMeter.classList.add('strength-fair');
+                    passwordStrengthText.textContent = 'Fair';
+                    passwordStrengthText.style.color = '#ffc107';
+                }
+                else if (strength <= 3) {
+                    passwordStrengthMeter.classList.add('strength-good');
+                    passwordStrengthText.textContent = 'Good';
+                    passwordStrengthText.style.color = '#34AD54';
+                }
+                else {
+                    passwordStrengthMeter.classList.add('strength-strong');
+                    passwordStrengthText.textContent = 'Strong';
+                    passwordStrengthText.style.color = '#00AB66';
+                }
+                
+                // Check if passwords match (if confirm field has content)
+                if (confirmPasswordField.value.length > 0) {
+                    checkPasswordsMatch();
+                }
+            });
+            
+            // Check if passwords match
+            confirmPasswordField.addEventListener('input', checkPasswordsMatch);
+            
+            function checkPasswordsMatch() {
+                const password = passwordField.value;
+                const confirmPassword = confirmPasswordField.value;
+                
+                if (confirmPassword.length === 0) {
+                    passwordMatchMessage.textContent = '';
+                    return;
+                }
+                
+                if (password === confirmPassword) {
+                    passwordMatchMessage.textContent = 'Passwords match';
+                    passwordMatchMessage.style.color = '#00AB66';
+                } else {
+                    passwordMatchMessage.textContent = 'Passwords do not match';
+                    passwordMatchMessage.style.color = '#dc3545';
+                }
+            }
+        });
+    </script>
+}

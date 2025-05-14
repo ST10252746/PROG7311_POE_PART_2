@@ -1,0 +1,228 @@
+﻿<!-- Views/Employee/Farmers.cshtml -->
+@model IEnumerable<ST10252746_PROG7311_POE_PART_2.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Farmers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Calculate statistics for dashboard
+    int totalFarmers = Model.Count();
+    int farmersWithPhone = Model.Count(f => !string.IsNullOrEmpty(f.PhoneNumber));
+    var locationGroups = Model.GroupBy(f => f.Location)
+        .Select(g => new { Location = g.Key, Count = g.Count() })
+        .OrderByDescending(x => x.Count)
+        .ToList();
+}
+
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" style="background: linear-gradient(rgba(0, 103, 75, .9), rgba(0, 103, 75, .9)), url(/img/carousel-1.jpg) center center no-repeat; background-size: cover;">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Employee Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Farmers</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="employee-container">
+        <!-- Sidebar Navigation -->
+        <div class="employee-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="employee-avatar">
+                        <i class="fa fa-user-tie"></i>
+                    </div>
+                    Employee Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Products">
+                        <i class="fa fa-box"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Employee/Farmers">
+                        <i class="fa fa-users"></i> Farmers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/CreateFarmer">
+                        <i class="fa fa-user-plus"></i> Add New Farmer
+                    </a>
+                </li> 
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Employee/Products" class="list-group-item list-group-item-action">
+                            <i class="fa fa-box me-2"></i> Products
+                        </a>
+                        <a href="/Employee/Farmers" class="list-group-item list-group-item-action active">
+                            <i class="fa fa-users me-2"></i> Farmers
+                        </a>
+                        <a href="/Employee/CreateFarmer" class="list-group-item list-group-item-action">
+                            <i class="fa fa-user-plus me-2"></i> Add New Farmer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="employee-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Farmers</h1>
+                <p>Manage farmers registered on the platform</p>
+                <div class="page-divider"></div>
+            </div>
+            
+            <!-- Dashboard Stats -->
+            <div class="stats-container">
+                <div class="stat-card total">
+                    <div class="stat-icon">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@totalFarmers</h3>
+                        <p>Total Farmers</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card locations">
+                    <div class="stat-icon">
+                        <i class="fa fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@(locationGroups.Count)</h3>
+                        <p>Different Locations</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card registered">
+                    <div class="stat-icon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@farmersWithPhone</h3>
+                        <p>Farmers with Contact</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a asp-action="CreateFarmer" class="btn btn-add-farmer">
+                    <i class="fa fa-user-plus"></i> Add New Farmer
+                </a>
+            </div>
+            
+            <!-- Farmers Listing -->
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="fa fa-users"></i>
+                    <h4>No Farmers Yet</h4>
+                    <p>No farmers have been added yet. Click the button below to get started.</p>
+                    <a asp-action="CreateFarmer" class="btn btn-add-farmer">
+                        <i class="fa fa-user-plus"></i> Add Your First Farmer
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="farmers-table-container">
+                    <div class="table-responsive">
+                        <table class="farmers-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fa fa-user me-2"></i> Name</th>
+                                    <th><i class="fa fa-envelope me-2"></i> Email</th>
+                                    <th><i class="fa fa-phone me-2"></i> Phone Number</th>
+                                    <th><i class="fa fa-map-marker-alt me-2"></i> Location</th>
+                                    <th><i class="fa fa-cogs me-2"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td data-label="Name">@item.Firstname @item.Lastname</td>
+                                        <td data-label="Email">@item.Email</td>
+                                        <td data-label="Phone">@(string.IsNullOrEmpty(item.PhoneNumber) ? "No phone provided" : item.PhoneNumber)</td>
+                                        <td data-label="Location">@(string.IsNullOrEmpty(item.Location) ? "No location provided" : item.Location)</td>
+                                        <td data-label="Actions">
+                                            <a asp-action="DeleteFarmer" asp-route-id="@item.Id" class="btn btn-delete">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

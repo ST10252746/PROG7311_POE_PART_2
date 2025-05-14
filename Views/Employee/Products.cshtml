@@ -1,0 +1,328 @@
+﻿<!-- Views/Employee/Products.cshtml -->
+@model IEnumerable<ST10252746_PROG7311_POE_PART_2.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Calculate statistics for dashboard
+    int totalProducts = Model.Count();
+    int totalFarmers = Model.Select(p => p.User.Id).Distinct().Count();
+    var categoryCounts = Model.GroupBy(p => p.Category)
+        .Select(g => new { Category = g.Key, Count = g.Count() })
+        .OrderByDescending(x => x.Count)
+        .ToList();
+    
+    var recentProducts = Model.Where(p => p.ProductionDate >= DateTime.Now.AddMonths(-1)).Count();
+    var oldestProduct = Model.OrderBy(p => p.ProductionDate).FirstOrDefault()?.ProductionDate;
+    var newestProduct = Model.OrderByDescending(p => p.ProductionDate).FirstOrDefault()?.ProductionDate;
+}
+
+
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5" >
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Employee Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Products</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-4">
+    <div class="employee-container">
+        <!-- Sidebar Navigation -->
+        <div class="employee-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="employee-avatar">
+                        <i class="fa fa-user-tie"></i>
+                    </div>
+                    Employee Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Employee/Products">
+                        <i class="fa fa-box"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Farmers">
+                        <i class="fa fa-users"></i> Farmers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/CreateFarmer">
+                        <i class="fa fa-user-plus"></i> Add New Farmer
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Employee/Products" class="list-group-item list-group-item-action active">
+                            <i class="fa fa-box me-2"></i> Products
+                        </a>
+                        <a href="/Employee/Farmers" class="list-group-item list-group-item-action">
+                            <i class="fa fa-users me-2"></i> Farmers
+                        </a>
+                        <a href="/Employee/CreateFarmer" class="list-group-item list-group-item-action">
+                            <i class="fa fa-user-plus me-2"></i> Add New Farmer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="employee-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Products</h1>
+                <p>Manage and view all products from farmers</p>
+                <div class="page-divider"></div>
+            </div>
+            
+            <!-- Dashboard Stats -->
+            <div class="stats-container">
+                <div class="stat-card total">
+                    <div class="stat-icon">
+                        <i class="fa fa-boxes"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@totalProducts</h3>
+                        <p>Total Products</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card farmers">
+                    <div class="stat-icon">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@totalFarmers</h3>
+                        <p>Farmers</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card categories">
+                    <div class="stat-icon">
+                        <i class="fa fa-tags"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@(categoryCounts.Count)</h3>
+                        <p>Categories</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card recent">
+                    <div class="stat-icon">
+                        <i class="fa fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>@recentProducts</h3>
+                        <p>Added This Month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filter Card -->
+            <div class="filter-card">
+                <h5 class="filter-title">
+                    <i class="fa fa-filter"></i> Filter Products
+                </h5>
+                
+                <form asp-action="Products" method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            <i class="fa fa-calendar"></i> From Date
+                        </label>
+                        <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate" />
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            <i class="fa fa-calendar"></i> To Date
+                        </label>
+                        <input type="date" name="toDate" class="form-control" value="@ViewBag.ToDate" />
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            <i class="fa fa-tag"></i> Category
+                        </label>
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category" selected="@(ViewBag.Category == category)">@category</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            <i class="fa fa-user"></i> Farmer
+                        </label>
+
+                        @if (ViewBag.Farmers != null && ViewBag.Farmers.Count > 0)
+                        {
+                            <select name="farmerId" class="form-select">
+                                <option value="">All Farmers</option>
+                                @foreach (var farmer in ViewBag.Farmers)
+                                {
+                                    <option value="@farmer.Id" selected="@(ViewBag.FarmerId == farmer.Id)">
+                                        @(farmer.Firstname + " " + farmer.Lastname)
+                                    </option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning p-2 mt-1">
+                                No farmers available.
+                            </div>
+                        }
+                    </div>
+
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fa fa-search"></i> Search
+                        </label>
+                        <div class="input-group">
+                            <input type="text" name="searchString" class="form-control" placeholder="Search..." value="@ViewBag.SearchString" />
+                            <button type="submit" class="btn btn-search">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Category Distribution -->
+            @if (categoryCounts.Any())
+            {
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="bg-white p-4 rounded shadow">
+                            <h5 class="mb-3 text-primary">
+                                <i class="fa fa-chart-pie me-2"></i> Category Distribution
+                            </h5>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var category in categoryCounts)
+                                {
+                                    <div class="category-badge">
+                                        @category.Category <span class="badge bg-primary rounded-pill ms-2">@category.Count</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+            <!-- Product Listing -->
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle me-2"></i> No products found matching your criteria.
+                </div>
+            }
+            else
+            {
+                <div class="products-grid">
+                    @foreach (var item in Model)
+                    {
+                        <div class="product-card">
+                            <div class="product-image">
+                                @if (!string.IsNullOrEmpty(item.Category))
+                                {
+                                    <div class="product-category">@item.Category</div>
+                                }
+                                @if (!string.IsNullOrEmpty(item.ImageUrlPath))
+                                {
+                                    <img src="@item.ImageUrlPath" alt="@item.Name">
+                                }
+                                else
+                                {
+                                    <img src="/img/placeholder.jpg" alt="@item.Name">
+                                }
+                            </div>
+                            <div class="product-details">
+                                <h5 class="product-title">@item.Name</h5>
+                                <div class="product-info">
+                                    <p><i class="fa fa-user"></i> @item.User.Firstname @item.User.Lastname</p>
+                                    <p><i class="fa fa-calendar"></i> @item.ProductionDate.ToShortDateString()</p>
+                                </div>
+                                <a asp-action="ProductDetails" asp-route-id="@item.ProductId" class="btn btn-view-details">
+                                    <i class="fa fa-eye"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
