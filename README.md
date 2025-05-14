@@ -1,8 +1,8 @@
-<img src="images/PixlyLogo.png" alt="Pixly Logo" width="200"/>
+<img src="appscreenshots/logo.png" alt="Logo" width="200"/>
 
 # Agri-Energy Connect: Vision for Sustainability
 
-South Africa's agriculture is evolving. Agri-Energy Connect is the next step forward — combining farming and clean energy. A digital bridge between farmers and green energy providers in South Africa.
+South Africa's agriculture is evolving. Agri-Energy Connect is the next step forward - combining farming and clean energy. A digital bridge between farmers and green energy providers in South Africa.
 
 > [![YouTube](https://img.shields.io/badge/Demo%20Video-Watch%20on%20YouTube-red?logo=youtube&logoColor=white)](https://youtu.be/Wzks6BYp9HU)
 
