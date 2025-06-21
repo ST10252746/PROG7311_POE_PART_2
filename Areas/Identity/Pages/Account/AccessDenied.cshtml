@@ -7,18 +7,16 @@
 
 <style>
     :root {
-        --primary: #00674b;
-        --secondary: #00AB66;
-        --tertiary: #00A693;
-        --accent: #34AD54;
-        --light: #F6FFF2;
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
         --white: #ffffff;
-        --light-gray: #f8f9fa;
-        --medium-gray: #e9ecef;
-        --dark-text: #343a40;
-        --danger: #dc3545;
-        --danger-light: #f8d7da;
-        --danger-dark: #842029;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
     }
 
     .access-denied-container {
@@ -161,19 +159,15 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav py-0">
             <a href="/" class="nav-item nav-link">Home</a>
-            <a href="/about" class="nav-item nav-link">About</a>
-            <a href="/contact" class="nav-item nav-link">Contact</a>
             <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
-            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
-            <a href="/educationalresources" class="nav-item nav-link">Training & Resources</a>
-            <a href="/projectfunding" class="nav-item nav-link">Projects & Funding</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
             @if (User.IsInRole("Farmer"))
             {
                 <div class="nav-item dropdown active">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
                     <div class="dropdown-menu m-0">
                         <a href="/Farmer/Products" class="dropdown-item">My Products</a>
-                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
+                       
                     </div>
                 </div>
             }
@@ -203,20 +197,6 @@
     </div>
 </nav>
 <!-- Navbar End -->
-
-<!-- Page Header Start -->
-<div class="container-fluid page-header py-5 mb-5" style="background: linear-gradient(rgba(0, 103, 75, .9), rgba(0, 103, 75, .9)), url(/img/carousel-1.jpg) center center no-repeat; background-size: cover;">
-    <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">Access Denied</h1>
-        <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
-                <li class="breadcrumb-item text-white active" aria-current="page">Access Denied</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<!-- Page Header End -->
 
 <div class="container py-4">
     <div class="access-denied-container">
