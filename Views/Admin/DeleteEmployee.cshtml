@@ -4,13 +4,433 @@
     ViewData["Title"] = "Delete Employee";
 }
 
+<style>
+    :root {
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
+        --danger: #dc3545;
+        --info: #17a2b8;
+        --admin-purple: #669506;
+        --admin-indigo: #8ed204;
+    
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+    }
+
+    /* Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: 60px;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+    }
+
+    .page-header h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Container Styling */
+    .admin-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Sidebar Styling */
+    .admin-sidebar {
+        min-width: 280px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: linear-gradient(135deg, var(--admin-purple) 0%, var(--admin-indigo) 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .admin-avatar {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0;
+        color: var(--text-dark);
+        padding: 1rem 1.5rem;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(111, 66, 193, 0.1);
+        color: var(--admin-purple);
+        border-left-color: var(--admin-purple);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(111, 66, 193, 0.1);
+        color: var(--admin-purple);
+        border-left-color: var(--admin-purple);
+    }
+
+    /* Mobile Sidebar */
+    .list-group-item {
+        border: none;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: rgba(111, 66, 193, 0.1);
+        color: var(--admin-purple);
+    }
+
+    .list-group-item.active {
+        background-color: var(--admin-purple);
+        color: white;
+    }
+
+    /* Main Content */
+    .admin-content {
+        flex: 1;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .page-title {
+        background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .page-title h1 {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-title p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .page-divider {
+        height: 3px;
+        background: linear-gradient(90deg, var(--admin-purple), var(--admin-indigo));
+        margin: 1rem auto 0;
+        width: 100px;
+        border-radius: 2px;
+    }
+
+    /* Delete Card Styling */
+    .delete-card {
+        margin: 2rem;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        border: 2px solid #f8d7da;
+    }
+
+    .delete-card-header {
+        background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+    }
+
+    .delete-card-header h3 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+    }
+
+    .delete-card-header i {
+        font-size: 1.75rem;
+        color: #fff3cd;
+    }
+
+    .delete-card-body {
+        padding: 2rem;
+    }
+
+    /* Warning Box */
+    .warning-box {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .warning-box i {
+        color: var(--danger);
+        font-size: 1.5rem;
+        margin-top: 0.25rem;
+        flex-shrink: 0;
+    }
+
+    .warning-box p {
+        color: var(--danger);
+        margin: 0;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    /* Employee Information */
+    .employee-info {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--admin-purple);
+    }
+
+    .info-title {
+        color: var(--admin-purple);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--admin-purple);
+    }
+
+    .info-title i {
+        color: var(--admin-purple);
+        font-size: 1.2rem;
+    }
+
+    /* Info List */
+    .info-list {
+        margin-bottom: 0;
+    }
+
+    .info-list dt {
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-list dt i {
+        color: var(--admin-purple);
+        font-size: 0.9rem;
+        width: 16px;
+    }
+
+    .info-list dd {
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+        font-size: 1rem;
+    }
+
+    /* Form Buttons */
+    .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid #f8f9fa;
+    }
+
+    .btn-admin-secondary {
+        background: var(--white);
+        border: 2px solid var(--text-muted);
+        color: var(--text-muted);
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-admin-secondary:hover {
+        border-color: var(--admin-purple);
+        color: var(--admin-purple);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .btn-admin-danger {
+        background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-admin-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(220, 53, 69, 0.4);
+        color: white;
+        background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .admin-container {
+            flex-direction: column;
+        }
+        
+        .delete-card {
+            margin: 1rem;
+        }
+        
+        .delete-card-body {
+            padding: 1.5rem;
+        }
+        
+        .form-buttons {
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
+        
+        .btn-admin-secondary,
+        .btn-admin-danger {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-title {
+            padding: 1.5rem;
+        }
+        
+        .page-title h1 {
+            font-size: 1.75rem;
+        }
+        
+        .delete-card-header {
+            padding: 1rem 1.5rem;
+        }
+        
+        .delete-card-header h3 {
+            font-size: 1.25rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .delete-card-body {
+            padding: 1rem;
+        }
+        
+        .employee-info {
+            padding: 1.5rem;
+        }
+        
+        .warning-box {
+            padding: 1rem;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .warning-box i {
+            margin-top: 0;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .info-list dt,
+        .info-list dd {
+            font-size: 0.9rem;
+        }
+        
+        .delete-card-header i {
+            font-size: 1.5rem;
+        }
+        
+        .warning-box i {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+
+
 <!-- Navbar Start -->
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
-
     <a href="/" class="navbar-brand d-flex align-items-center">
-        <img src="img/logo.png" alt="logo"
+        <img src="~/img/logo.png" alt="logo"
              style="height: 100px; width: 100px; margin-right: 10px;">
     </a>
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -18,14 +438,13 @@
         <div class="navbar-nav py-0">
             <a href="/" class="nav-item nav-link">Home</a>
             <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
-            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
             @if (User.IsInRole("Farmer"))
             {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
                     <div class="dropdown-menu m-0">
                         <a href="/Farmer/Products" class="dropdown-item">My Products</a>
-                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
                     </div>
                 </div>
             }
@@ -55,20 +474,6 @@
     </div>
 </nav>
 <!-- Navbar End -->
-<!-- Page Header Start -->
-<div class="container-fluid page-header py-5 mb-5" style="background: linear-gradient(rgba(0, 103, 75, .9), rgba(0, 103, 75, .9)), url(/img/carousel-1.jpg) center center no-repeat; background-size: cover;">
-    <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">Admin Dashboard</h1>
-        <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
-                <li class="breadcrumb-item"><a class="text-white" href="/Admin/Employees">Employees</a></li>
-                <li class="breadcrumb-item text-white active" aria-current="page">Delete Employee</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<!-- Page Header End -->
 
 <div class="container py-4">
     <div class="admin-container">
@@ -84,14 +489,10 @@
             </div>
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/Admin/Employees">
-                        <i class="fa fa-users-cog"></i> Employees
-                    </a>
+                    <a class="nav-link active" href="/Admin/Employees">Employees</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/Admin/CreateEmployee">
-                        <i class="fa fa-user-plus"></i> Add New Employee
-                    </a>
+                    <a class="nav-link" href="/Admin/CreateEmployee">Add New Employee</a>
                 </li>
             </ul>
         </div>
@@ -101,12 +502,8 @@
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="/Admin/Employees" class="list-group-item list-group-item-action active">
-                            <i class="fa fa-users-cog me-2"></i> Employees
-                        </a>
-                        <a href="/Admin/CreateEmployee" class="list-group-item list-group-item-action">
-                            <i class="fa fa-user-plus me-2"></i> Add New Employee
-                        </a>
+                        <a href="/Admin/Employees" class="list-group-item list-group-item-action active">Employees</a>
+                        <a href="/Admin/CreateEmployee" class="list-group-item list-group-item-action">Add New Employee</a>
                     </div>
                 </div>
             </div>
@@ -146,7 +543,6 @@
 
                             <dt class="col-sm-3"><i class="fa fa-envelope"></i> Email:</dt>
                             <dd class="col-sm-9">@Model.Email</dd>
-
                         </dl>
                     </div>
 

@@ -11,13 +11,474 @@
     var categories = Model.Select(p => p.Category).Distinct().Count();
 }
 
+<style>
+    :root {
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
+        --danger: #dc3545;
+        --info: #17a2b8;
+    }
 
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+    }
+
+    /* Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: 60px;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+    }
+
+    .page-header h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Container Styling */
+    .farmer-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Sidebar Styling */
+    .farmer-sidebar {
+        min-width: 280px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .farmer-avatar {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0;
+        color: var(--text-dark);
+        padding: 1rem 1.5rem;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    /* Mobile Sidebar */
+    .list-group-item {
+        border: none;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+    }
+
+    .list-group-item.active {
+        background-color: var(--olive-green);
+        color: white;
+    }
+
+    /* Main Content */
+    .farmer-content {
+        flex: 1;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .page-title {
+        background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .page-title h1 {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-title p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .page-divider {
+        height: 3px;
+        background: linear-gradient(90deg, var(--olive-green), var(--forest-green));
+        margin: 1rem auto 0;
+        width: 100px;
+        border-radius: 2px;
+    }
+
+    /* No Products State */
+    .no-products {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-muted);
+    }
+
+    .no-products i {
+        font-size: 4rem;
+        color: var(--olive-green);
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+
+    .no-products h4 {
+        color: var(--text-dark);
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .no-products p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-add-product {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(122, 152, 11, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-add-product:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(122, 152, 11, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Products Grid */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+
+    .product-card {
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .product-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .product-category {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .product-details {
+        padding: 1.5rem;
+    }
+
+    .product-title {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+    }
+
+    .product-info {
+        margin-bottom: 1rem;
+    }
+
+    .product-info p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-info i {
+        color: var(--olive-green);
+        width: 16px;
+    }
+
+    .product-description {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Product Actions */
+    .product-actions {
+        display: flex;
+        gap: 0.75rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, var(--info) 0%, #138496 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-edit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Statistics Cards (if needed in future) */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        padding: 2rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        border-left: 4px solid var(--olive-green);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--forest-green);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .farmer-container {
+            flex-direction: column;
+        }
+        
+        .products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .products-grid {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+        }
+        
+        .page-title {
+            padding: 1.5rem;
+        }
+        
+        .page-title h1 {
+            font-size: 1.75rem;
+        }
+
+        .no-products {
+            padding: 2rem 1rem;
+        }
+
+        .no-products i {
+            font-size: 3rem;
+        }
+
+        .product-actions {
+            flex-direction: column;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .product-card {
+            margin-bottom: 1rem;
+        }
+
+        .product-details {
+            padding: 1rem;
+        }
+
+        .product-actions {
+            gap: 0.5rem;
+        }
+    }
+</style>
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
 
     <a href="/" class="navbar-brand d-flex align-items-center">
-        <img src="img/logo.png" alt="logo"
+        <img src="~/img/logo.png" alt="logo"
              style="height: 100px; width: 100px; margin-right: 10px;">
     </a>
+
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -27,14 +488,13 @@
         <div class="navbar-nav py-0">
             <a href="/" class="nav-item nav-link">Home</a>
             <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
-            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
             @if (User.IsInRole("Farmer"))
             {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
                     <div class="dropdown-menu m-0">
                         <a href="/Farmer/Products" class="dropdown-item">My Products</a>
-                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
                     </div>
                 </div>
             }
@@ -65,20 +525,6 @@
 </nav>
 <!-- Navbar End -->
 
-<!-- Page Header Start -->
-<div class="container-fluid page-header py-5 mb-5" style="background: linear-gradient(rgba(0, 103, 75, .9), rgba(0, 103, 75, .9)), url(/img/carousel-1.jpg) center center no-repeat; background-size: cover;">
-    <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">Farmer Dashboard</h1>
-        <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
-                <li class="breadcrumb-item text-white active" aria-current="page">My Products</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<!-- Page Header End -->
-
 <div class="container py-4">
     <div class="farmer-container">
         <!-- Sidebar Navigation -->
@@ -93,24 +539,10 @@
             </div>
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/Farmer/Products">
-                        <i class="fa fa-leaf"></i> My Products
-                    </a>
+                    <a class="nav-link active" href="/Farmer/Products">My Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/Farmer/CreateProduct">
-                        <i class="fa fa-plus-circle"></i> Add New Product
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Farmer/Profile">
-                        <i class="fa fa-user"></i> My Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Marketplace">
-                        <i class="fa fa-store"></i> Marketplace
-                    </a>
+                    <a class="nav-link" href="/Farmer/CreateProduct">Add New Product</a>
                 </li>
             </ul>
         </div>
@@ -120,15 +552,8 @@
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="/Farmer/Products" class="list-group-item list-group-item-action active">
-                            <i class="fa fa-leaf me-2"></i> My Products
-                        </a>
-                        <a href="/Farmer/CreateProduct" class="list-group-item list-group-item-action">
-                            <i class="fa fa-plus-circle me-2"></i> Add New Product
-                        </a>
-                        <a href="/Farmer/Profile" class="list-group-item list-group-item-action">
-                            <i class="fa fa-user me-2"></i> My Profile
-                        </a>
+                        <a href="/Farmer/Products" class="list-group-item list-group-item-action active">My Products</a>
+                        <a href="/Farmer/CreateProduct" class="list-group-item list-group-item-action">Add New Product</a>
                     </div>
                 </div>
             </div>
@@ -139,58 +564,8 @@
             <!-- Page Title -->
             <div class="page-title">
                 <h1>My Products</h1>
-                <p>Manage and showcase your agricultural products</p>
+                <p>Manage and showcase your products</p>
                 <div class="page-divider"></div>
-            </div>
-            
-            <!-- Dashboard Stats -->
-            <div class="stats-container">
-                <div class="stat-card total">
-                    <div class="stat-icon">
-                        <i class="fa fa-boxes"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@totalProducts</h3>
-                        <p>Total Products</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card categories">
-                    <div class="stat-icon">
-                        <i class="fa fa-tags"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@categories</h3>
-                        <p>Categories</p>
-                    </div>
-                </div>
-                
-                @* <div class="stat-card organic">
-                    <div class="stat-icon">
-                        <i class="fa fa-seedling"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@organicProducts</h3>
-                        <p>Organic Products</p>
-                    </div>
-                </div> *@
-                
-                <div class="stat-card recent">
-                    <div class="stat-icon">
-                        <i class="fa fa-calendar-alt"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@recentProducts</h3>
-                        <p>Added This Month</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="action-buttons text-end mb-4">
-                <a asp-action="CreateProduct" class="btn btn-add-product">
-                    <i class="fa fa-plus"></i> Add New Product
-                </a>
             </div>
             
             <!-- Products Listing -->
@@ -199,7 +574,7 @@
                 <div class="no-products">
                     <i class="fa fa-seedling"></i>
                     <h4>No Products Yet</h4>
-                    <p>You haven't added any products to your inventory. Start showcasing your agricultural products to potential buyers.</p>
+                    <p>You haven't added any products to your inventory. Start showcasing your products.</p>
                     <a asp-action="CreateProduct" class="btn btn-add-product">
                         <i class="fa fa-plus"></i> Add Your First Product
                     </a>

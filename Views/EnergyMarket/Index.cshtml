@@ -1,0 +1,1095 @@
+﻿@{
+    ViewData["Title"] = "Green Energy Marketplace";
+}
+
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="~/img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/energymarket" class="nav-item nav-link active">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Energy Marketplace - Agri-Energy Connect</title>
+    <style>
+        :root {
+            --primary-dark: #115631;
+            --primary-medium: #5e8c38;
+            --primary-light: #618a47;
+            --accent-dark: #006400;
+            --accent-light: #228B22;
+            --complementary-beige: #f5f5dc;
+            --complementary-light: #e6efe2;
+            --complementary-gold: #d4af37;
+            --text-dark: #333333;
+            --text-light: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --energy-blue: #1e88e5;
+            --energy-orange: #ff9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--complementary-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(17, 86, 49, 0.8), rgba(0, 100, 0, 0.7)), url('/img/solar-farm.jpg') center/cover;
+            color: var(--text-light);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-filter-bar {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 10px;
+            background: var(--text-light);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .search-filter-bar input,
+        .search-filter-bar select {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background-color: var(--complementary-gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #c79e2f;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-medium);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        /* Category Filter Tabs */
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--text-light);
+            border: 2px solid var(--primary-light);
+            color: var(--primary-dark);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: var(--primary-medium);
+            color: var(--text-light);
+            border-color: var(--primary-medium);
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: var(--text-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.08);
+        }
+
+        .energy-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .solar-badge { background-color: var(--energy-orange); }
+        .wind-badge { background-color: var(--energy-blue); }
+        .biogas-badge { background-color: var(--accent-dark); }
+
+        .product-content {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            color: var(--primary-medium);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .product-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .spec-label {
+            color: #777;
+        }
+
+        .spec-value {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--complementary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            color: var(--complementary-gold);
+        }
+
+        .rating-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-compare {
+            background: var(--text-light);
+            border: 2px solid var(--primary-light);
+            color: var(--primary-dark);
+            flex: 1;
+        }
+
+        .btn-compare:hover {
+            background: var(--primary-light);
+            color: var(--text-light);
+        }
+
+        .btn-contact {
+            background: var(--primary-medium);
+            color: var(--text-light);
+            flex: 2;
+        }
+
+        .btn-contact:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Featured Providers Section */
+        .providers-section {
+            background-color: var(--text-light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .providers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .provider-card {
+            text-align: center;
+            padding: 1.5rem;
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .provider-card:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        .provider-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background: var(--complementary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-medium);
+        }
+
+        .provider-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+
+        .provider-specialty {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .provider-rating {
+            color: var(--complementary-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* Comparison Tool Section */
+        .comparison-section {
+            background: linear-gradient(135deg, var(--primary-medium), var(--accent-dark));
+            color: var(--text-light);
+            padding: 3rem 0;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+
+        .comparison-section h2 {
+            margin-bottom: 1rem;
+        }
+
+        .comparison-section p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .comparison-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-white {
+            background-color: var(--text-light);
+            color: var(--primary-dark);
+        }
+
+        .btn-white:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            background-color: var(--text-light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .review-card {
+            padding: 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .reviewer-info h4 {
+            margin: 0;
+            color: var(--primary-dark);
+        }
+
+        .reviewer-info .location {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .review-rating {
+            color: var(--complementary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .review-text {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .search-filter-bar {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .category-tabs {
+                justify-content: center;
+            }
+
+            .product-specs {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-actions {
+                flex-direction: column;
+            }
+
+            .providers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Green Energy Marketplace</h2>
+            <p>Discover cutting-edge renewable energy solutions designed specifically for South African agricultural needs. Compare products, read reviews, and connect with trusted green technology providers.</p>
+            <div class="search-filter-bar">
+                <input type="text" placeholder="Search for solar panels, wind turbines, biogas systems...">
+                <select>
+                    <option value="">All Categories</option>
+                    <option value="solar">Solar Solutions</option>
+                    <option value="wind">Wind Energy</option>
+                    <option value="biogas">Biogas Systems</option>
+                    <option value="irrigation">Smart Irrigation</option>
+                </select>
+                <button class="btn">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content container">
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterProducts('all')">All Products</button>
+            <button class="tab-btn" onclick="filterProducts('solar')">Solar Solutions</button>
+            <button class="tab-btn" onclick="filterProducts('wind')">Wind Energy</button>
+            <button class="tab-btn" onclick="filterProducts('biogas')">Biogas Systems</button>
+            <button class="tab-btn" onclick="filterProducts('irrigation')">Smart Irrigation</button>
+        </div>
+
+        <!-- Products Section -->
+        <h2 style="margin-bottom: 1.5rem; color: var(--primary-dark);">Featured Energy Solutions</h2>
+        <div class="products-grid">
+            <!-- Solar Product 1 -->
+            <div class="product-card" data-category="solar">
+                <div class="product-image">
+                    <img src="~/images/products/31abe273-4553-47e0-a986-e497417deefe_hydropower.png" />   alt="Agricultural Solar Panel System">
+                    <div class="energy-badge solar-badge">Solar</div>
+                </div>
+                <div class="product-content">
+                    <div class="product-category">Solar Energy</div>
+                    <h3 class="product-title">AgriSolar Pro 500W Panel System</h3>
+                    <p class="product-description">High-efficiency monocrystalline solar panels designed for agricultural applications with weather-resistant mounting systems.</p>
+                    <div class="product-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Power Output:</span>
+                            <span class="spec-value">500W</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Efficiency:</span>
+                            <span class="spec-value">21.5%</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Warranty:</span>
+                            <span class="spec-value">25 Years</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Area Coverage:</span>
+                            <span class="spec-value">2.5m²</span>
+                        </div>
+                    </div>
+                    <div class="product-price">R 12,500</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.8 (127 reviews)</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-compare">Compare</button>
+                        <button class="btn btn-contact">Contact Supplier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wind Product -->
+            <div class="product-card" data-category="wind">
+                <div class="product-image">
+                    <img src="~/images/products/60b613e5-4659-443f-80af-0e8fa1e8ebba_windpower.png" />  alt="Small Farm Wind Turbine">
+                    <div class="energy-badge wind-badge">Wind</div>
+                </div>
+                <div class="product-content">
+                    <div class="product-category">Wind Energy</div>
+                    <h3 class="product-title">FarmWind Micro Turbine 3kW</h3>
+                    <p class="product-description">Compact wind turbine system perfect for small to medium farms with consistent wind patterns above 4m/s average.</p>
+                    <div class="product-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Power Output:</span>
+                            <span class="spec-value">3kW</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Min Wind Speed:</span>
+                            <span class="spec-value">3.5 m/s</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Tower Height:</span>
+                            <span class="spec-value">12m</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Noise Level:</span>
+                            <span class="spec-value">< 45dB</span>
+                        </div>
+                    </div>
+                    <div class="product-price">R 95,000</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-text">4.3 (89 reviews)</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-compare">Compare</button>
+                        <button class="btn btn-contact">Contact Supplier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Biogas Product -->
+            <div class="product-card" data-category="biogas">
+                <div class="product-image">
+                    <img src="~/images/products/785129c9-aad3-424b-9876-e6558a780417_solarpower.png" />    alt="Farm Biogas Digester">
+                    <div class="energy-badge biogas-badge">Biogas</div>
+                </div>
+                <div class="product-content">
+                    <div class="product-category">Biogas Energy</div>
+                    <h3 class="product-title">BioPower Digestor 10m³</h3>
+                    <p class="product-description">Complete biogas system converting agricultural waste into clean energy for cooking, heating, and electricity generation.</p>
+                    <div class="product-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Gas Output:</span>
+                            <span class="spec-value">15-20m³/day</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Capacity:</span>
+                            <span class="spec-value">10m³</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Material:</span>
+                            <span class="spec-value">HDPE</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Livestock:</span>
+                            <span class="spec-value">20-30 cattle</span>
+                        </div>
+                    </div>
+                    <div class="product-price">R 45,000</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.7 (156 reviews)</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-compare">Compare</button>
+                        <button class="btn btn-contact">Contact Supplier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solar Irrigation Product -->
+            <div class="product-card" data-category="irrigation">
+                <div class="product-image">
+                    <img src="~/images/products/f5011c5c-bb33-4d97-81b0-5f7614f92d80_biomass.png" />  alt="Solar Powered Irrigation System">
+                    <div class="energy-badge solar-badge">Solar</div>
+                </div>
+                <div class="product-content">
+                    <div class="product-category">Smart Irrigation</div>
+                    <h3 class="product-title">SolarFlow Irrigation Controller</h3>
+                    <p class="product-description">Intelligent solar-powered irrigation system with automated scheduling and remote monitoring capabilities.</p>
+                    <div class="product-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Coverage:</span>
+                            <span class="spec-value">5 hectares</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Pump Power:</span>
+                            <span class="spec-value">2kW</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Water Flow:</span>
+                            <span class="spec-value">150L/min</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Smart Control:</span>
+                            <span class="spec-value">Yes</span>
+                        </div>
+                    </div>
+                    <div class="product-price">R 78,500</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.9 (203 reviews)</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-compare">Compare</button>
+                        <button class="btn btn-contact">Contact Supplier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wind/Solar Hybrid -->
+            <div class="product-card" data-category="solar wind">
+                <div class="product-image">
+                    <img src="~/images/products/60b613e5-4659-443f-80af-0e8fa1e8ebba_windpower.png" />  alt="Hybrid Solar Wind System">
+                    <div class="energy-badge wind-badge">Hybrid</div>
+                </div>
+                <div class="product-content">
+                    <div class="product-category">Hybrid Energy</div>
+                    <h3 class="product-title">HybridMax Solar-Wind System</h3>
+                    <p class="product-description">Combined solar and wind energy system providing consistent power generation day and night, perfect for off-grid farms.</p>
+                    <div class="product-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Solar Power:</span>
+                            <span class="spec-value">2kW</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Wind Power:</span>
+                            <span class="spec-value">1kW</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Battery:</span>
+                            <span class="spec-value">10kWh</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Daily Output:</span>
+                            <span class="spec-value">15-25kWh</span>
+                        </div>
+                    </div>
+                    <div class="product-price">R 125,000</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-text">4.4 (67 reviews)</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-compare">Compare</button>
+                        <button class="btn btn-contact">Contact Supplier</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Battery Storage -->
+            <div class="product-card" data-category="solar">
+                <div class="product-image">
+                    <img src="~/images/products/31abe273-4553-47e0-a986-e497417deefe_hydropower.png" /> alt="Agricultural Battery Storage">
+                    <div class="energy-badge solar-badge">Storage</div>
+                </div>
+                <div class="product-content">
+                    <div class="product-category">Energy Storage</div>
+                    <h3 class="product-title">AgriPower Lithium Battery Bank</h3>
+                    <p class="product-description">High-capacity lithium battery storage system for storing renewable energy and ensuring consistent power supply.</p>
+                    <div class="product-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Capacity:</span>
+                            <span class="spec-value">15kWh</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Voltage:</span>
+                            <span class="spec-value">48V</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Cycles:</span>
+                            <span class="spec-value">6,000+</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Monitoring:</span>
+                            <span class="spec-value">Smart BMS</span>
+                        </div>
+                    </div>
+                    <div class="product-price">R 85,000</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.6 (94 reviews)</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-compare">Compare</button>
+                        <button class="btn btn-contact">Contact Supplier</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Providers Section -->
+        <div class="providers-section">
+            <div class="section-header">
+                <h2>Trusted Green Energy Providers</h2>
+                <p>Connect with certified suppliers specializing in agricultural renewable energy solutions</p>
+            </div>
+            <div class="providers-grid">
+                <div class="provider-card">
+                    <div class="provider-logo">⚡</div>
+                    <h4 class="provider-name">SolarFarm Solutions</h4>
+                    <p class="provider-specialty">Solar panels & installation for farms</p>
+                    <div class="provider-rating">★★★★★ (4.9/5)</div>
+                    <p style="font-size: 0.9rem; color: #666;">Cape Town, Western Cape</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">View Products</button>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-logo">💨</div>
+                    <h4 class="provider-name">WindPower Agricultural</h4>
+                    <p class="provider-specialty">Small wind turbines & hybrid systems</p>
+                    <div class="provider-rating">★★★★☆ (4.6/5)</div>
+                    <p style="font-size: 0.9rem; color: #666;">Johannesburg, Gauteng</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">View Products</button>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-logo">🌱</div>
+                    <h4 class="provider-name">BioEnergy Systems SA</h4>
+                    <p class="provider-specialty">Biogas digesters & waste-to-energy</p>
+                    <div class="provider-rating">★★★★★ (4.8/5)</div>
+                    <p style="font-size: 0.9rem; color: #666;">Durban, KwaZulu-Natal</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">View Products</button>
+                </div>
+
+                <div class="provider-card">
+                    <div class="provider-logo">💧</div>
+                    <h4 class="provider-name">SmartIrrigate Tech</h4>
+                    <p class="provider-specialty">Solar irrigation & water management</p>
+                    <div class="provider-rating">★★★★★ (4.7/5)</div>
+                    <p style="font-size: 0.9rem; color: #666;">Pretoria, Gauteng</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">View Products</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Tool Section -->
+        <div class="comparison-section">
+            <div class="container">
+                <h2>Smart Comparison Tool</h2>
+                <p>Compare energy solutions side-by-side to find the perfect fit for your farm's needs and budget. Our intelligent comparison tool considers your location, energy requirements, and budget constraints.</p>
+                
+                <div class="comparison-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <h4>Performance Metrics</h4>
+                        <p>Compare efficiency, output, and ROI</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💰</div>
+                        <h4>Cost Analysis</h4>
+                        <p>Total cost of ownership calculator</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🌍</div>
+                        <h4>Location Suitability</h4>
+                        <p>Climate and terrain compatibility</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⏱️</div>
+                        <h4>Installation Time</h4>
+                        <p>Setup timeline and requirements</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-white">Start Comparison</button>
+            </div>
+        </div>
+
+        <!-- Customer Reviews Section -->
+        <div class="reviews-section">
+            <div class="section-header">
+                <h2>What Our Customers Say</h2>
+                <p>Real experiences from South African farmers using renewable energy solutions</p>
+            </div>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">JM</div>
+                        <div class="reviewer-info">
+                            <h4>Johan Müller</h4>
+                            <p class="location">Citrus Farm, Western Cape</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">"The solar irrigation system has transformed our farm operations. We've reduced our electricity costs by 85% and have reliable water supply even during load shedding. The installation team was professional and the system pays for itself."</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">SN</div>
+                        <div class="reviewer-info">
+                            <h4>Sarah Ndaba</h4>
+                            <p class="location">Vegetable Farm, Limpopo</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">"Our biogas system converts cow waste into cooking gas and electricity. It's been running for 18 months now and has significantly reduced our energy costs while solving our waste management issues. Highly recommended!"</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">DV</div>
+                        <div class="reviewer-info">
+                            <h4>David van der Merwe</h4>
+                            <p class="location">Grain Farm, Free State</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">★★★★☆</div>
+                    <p class="review-text">"The wind-solar hybrid system works great for our remote location. Some initial setup challenges, but excellent support from the supplier. Now enjoying 24/7 renewable power for our operations."</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">MK</div>
+                        <div class="reviewer-info">
+                            <h4>Mary Khumalo</h4>
+                            <p class="location">Dairy Farm, KwaZulu-Natal</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">"Solar panels power our milking equipment and cold storage. The battery backup ensures we never lose power during critical milking times. ROI achieved in just 3 years. Planning to expand the system."</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">TP</div>
+                        <div class="reviewer-info">
+                            <h4>Thabo Pule</h4>
+                            <p class="location">Poultry Farm, North West</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">★★★★★</div>
+                    <p class="review-text">"Smart irrigation system monitors soil moisture and weather patterns automatically. Water usage reduced by 40% while crop yields increased. The mobile app alerts are very helpful for remote monitoring."</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">LB</div>
+                        <div class="reviewer-info">
+                            <h4>Linda Botha</h4>
+                            <p class="location">Mixed Farm, Eastern Cape</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">★★★★☆</div>
+                    <p class="review-text">"Micro wind turbine complements our solar setup perfectly. Generates power even on cloudy days when wind is good. Installation was quick and maintenance requirements are minimal."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="comparison-section" style="margin-top: 3rem;">
+            <div class="container">
+                <h2>Ready to Power Your Farm with Clean Energy?</h2>
+                <p>Join over 2,500 South African farmers who have already made the switch to renewable energy. Get personalized recommendations based on your farm size, location, and energy needs.</p>
+                
+                <div class="comparison-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">📋</div>
+                        <h4>Free Assessment</h4>
+                        <p>Get a customized energy audit</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💡</div>
+                        <h4>Expert Consultation</h4>
+                        <p>Speak with renewable energy specialists</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🚀</div>
+                        <h4>Installation Support</h4>
+                        <p>End-to-end project management</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🛡️</div>
+                        <h4>Warranty Protection</h4>
+                        <p>Comprehensive coverage & support</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button class="btn btn-white">Get Free Quote</button>
+                    <button class="btn" style="background-color: var(--accent-dark);">Schedule Consultation</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Product filtering functionality
+        function filterProducts(category) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Show/hide products based on category
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                if (category === 'all') {
+                    product.style.display = 'block';
+                } else {
+                    const productCategories = product.getAttribute('data-category');
+                    if (productCategories && productCategories.includes(category)) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Add hover effects and interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for comparison buttons
+            document.querySelectorAll('.btn-compare').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Product added to comparison! (This would integrate with a comparison tool)');
+                });
+            });
+
+            // Add click handlers for contact buttons
+            document.querySelectorAll('.btn-contact').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Contact form opened! (This would show supplier contact details)');
+                });
+            });
+
+            // Search functionality
+            document.querySelector('.search-filter-bar input').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const products = document.querySelectorAll('.product-card');
+                
+                products.forEach(product => {
+                    const title = product.querySelector('.product-title').textContent.toLowerCase();
+                    const description = product.querySelector('.product-description').textContent.toLowerCase();
+                    const category = product.querySelector('.product-category').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm) || category.includes(searchTerm)) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

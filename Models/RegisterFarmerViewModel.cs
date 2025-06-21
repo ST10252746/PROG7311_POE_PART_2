@@ -64,11 +64,6 @@ namespace ST10252746_PROG7311_POE_PART_2.Models
         [Display(Name = "Location")]
         public string Location { get; set; }
 
-        //Type of farm (e.g., Crop, Livestock, Mixed)
-        [Required(ErrorMessage = "Farm type is required")]
-        [Display(Name = "Farm Type")]
-        public string FarmType { get; set; }
-
         //Password for login (must be between 6 and 100 characters)
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]

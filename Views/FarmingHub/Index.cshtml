@@ -6,7 +6,7 @@
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
 
     <a href="/" class="navbar-brand d-flex align-items-center">
-        <img src="img/logo.png" alt="logo"
+        <img src="~/img/logo.png" alt="logo"
              style="height: 100px; width: 100px; margin-right: 10px;">
     </a>
 
@@ -18,14 +18,13 @@
         <div class="navbar-nav py-0">
             <a href="/" class="nav-item nav-link active">Home</a>
             <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
-            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
             @if (User.IsInRole("Farmer"))
             {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
                     <div class="dropdown-menu m-0">
                         <a href="/Farmer/Products" class="dropdown-item">My Products</a>
-                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
                     </div>
                 </div>
             }

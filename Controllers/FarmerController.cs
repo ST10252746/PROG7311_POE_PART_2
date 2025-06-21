@@ -274,91 +274,11 @@ namespace ST10252746_PROG7311_POE_PART_2.Controllers
             return RedirectToAction(nameof(Products));
         }
 
-        //Displays the profile of the logged-in farmer
-        public async Task<IActionResult> Profile()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.ApplicationUsers.FindAsync(userId);
-
-            if (user == null)
-                return NotFound();
-
-            if (TempData["PasswordChangeSuccess"] != null)
-                ViewBag.PasswordChangeSuccess = TempData["PasswordChangeSuccess"].ToString();
-            if (TempData["PasswordChangeError"] != null)
-                ViewBag.PasswordChangeError = TempData["PasswordChangeError"].ToString();
-
-            return View(user);
-        }
-
-        //Handles profile information updates
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateProfile(ApplicationUser user)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUser = await _context.ApplicationUsers.FindAsync(userId);
-
-            if (currentUser == null)
-                return NotFound();
-
-            if (ModelState.IsValid)
-            {
-                currentUser.Firstname = user.Firstname;
-                currentUser.Lastname = user.Lastname;
-                currentUser.PhoneNumber = user.PhoneNumber;
-                currentUser.Location = user.Location;
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Profile));
-            }
-
-            return View("Profile", user);
-        }
-
+      
         //Checks if the product exists in the database
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
-        }
-
-        //Handles password updates for the farmer account
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdatePassword(string newPassword, string confirmPassword)
-        {
-            if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
-            {
-                TempData["PasswordChangeError"] = "All fields are required";
-                return RedirectToAction(nameof(Profile));
-            }
-
-            if (newPassword != confirmPassword)
-            {
-                TempData["PasswordChangeError"] = "The new password and confirmation password do not match";
-                return RedirectToAction(nameof(Profile));
-            }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-                return NotFound();
-
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-
-            if (!result.Succeeded)
-            {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                TempData["PasswordChangeError"] = $"Failed to update password: {errors}";
-                return RedirectToAction(nameof(Profile));
-            }
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
-            TempData["PasswordChangeSuccess"] = "Your password has been updated successfully";
-            return RedirectToAction(nameof(Profile));
         }
     }
 }

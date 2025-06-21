@@ -5,14 +5,449 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    :root {
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
+        --info: #17a2b8;
+    }
 
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+    }
+
+    /* Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: 60px;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+    }
+
+    .page-header h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Container Styling */
+    .farmer-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Sidebar Styling */
+    .farmer-sidebar {
+        min-width: 280px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .farmer-avatar {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0;
+        color: var(--text-dark);
+        padding: 1rem 1.5rem;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    /* Mobile Sidebar */
+    .list-group-item {
+        border: none;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+    }
+
+    .list-group-item.active {
+        background-color: var(--olive-green);
+        color: white;
+    }
+
+    /* Main Content */
+    .farmer-content {
+        flex: 1;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .page-title {
+        background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .page-title h1 {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-title p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .page-divider {
+        height: 3px;
+        background: linear-gradient(90deg, var(--olive-green), var(--forest-green));
+        margin: 1rem auto 0;
+        width: 100px;
+        border-radius: 2px;
+    }
+
+    /* Form Styling */
+    .form-card {
+        padding: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #f8f9fa;
+    }
+
+    .form-section:last-of-type {
+        border-bottom: none;
+        margin-bottom: 1rem;
+    }
+
+    .form-section-title {
+        color: var(--forest-green);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--olive-green);
+        display: inline-block;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-green);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .required-indicator {
+        color: #dc3545;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--olive-green);
+        box-shadow: 0 0 0 0.2rem rgba(122, 152, 11, 0.25);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    /* Image Preview Styling */
+    .image-preview-container {
+        position: relative;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        max-width: 300px;
+    }
+
+    .image-preview {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .image-preview-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.7));
+        color: white;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .image-preview-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* File Input Styling */
+    .file-input-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .file-input-button {
+        position: relative;
+        background: linear-gradient(135deg, var(--info) 0%, #138496 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        overflow: hidden;
+    }
+
+    .file-input-button:hover {
+        background: linear-gradient(135deg, #138496 0%, #0c6674 100%);
+        transform: translateY(-1px);
+    }
+
+    .file-input-button input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-name {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .form-text {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    /* New Image Preview */
+    #newImagePreviewContainer {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, rgba(23, 162, 184, 0.05) 0%, rgba(23, 162, 184, 0.02) 100%);
+        border-radius: 8px;
+        border-left: 4px solid var(--info);
+    }
+
+    #newImagePreview {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Alert Styling */
+    .alert-validation {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Button Styling */
+    .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid #f8f9fa;
+    }
+
+    .btn-farmer-primary {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(122, 152, 11, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-farmer-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(122, 152, 11, 0.4);
+        color: white;
+    }
+
+    .btn-farmer-secondary {
+        background: var(--white);
+        border: 2px solid var(--text-muted);
+        color: var(--text-muted);
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-farmer-secondary:hover {
+        border-color: var(--olive-green);
+        color: var(--olive-green);
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .farmer-container {
+            flex-direction: column;
+        }
+        
+        .form-buttons {
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
+        
+        .btn-farmer-primary,
+        .btn-farmer-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .form-card {
+            padding: 1rem;
+        }
+        
+        .page-title {
+            padding: 1.5rem;
+        }
+        
+        .page-title h1 {
+            font-size: 1.75rem;
+        }
+
+        .file-input-container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .image-preview-container {
+            max-width: 100%;
+        }
+
+        .image-preview {
+            height: 150px;
+        }
+    }
+</style>
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
 
     <a href="/" class="navbar-brand d-flex align-items-center">
-        <img src="img/logo.png" alt="logo"
+        <img src="~/img/logo.png" alt="logo"
              style="height: 100px; width: 100px; margin-right: 10px;">
     </a>
-
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -20,14 +455,13 @@
         <div class="navbar-nav py-0">
             <a href="/" class="nav-item nav-link">Home</a>
             <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
-            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
             @if (User.IsInRole("Farmer"))
             {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
                     <div class="dropdown-menu m-0">
                         <a href="/Farmer/Products" class="dropdown-item">My Products</a>
-                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
                     </div>
                 </div>
             }
@@ -58,20 +492,6 @@
 </nav>
 <!-- Navbar End -->
 
-<!-- Page Header Start -->
-<div class="container-fluid page-header py-5 mb-5">
-    <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">Farmer Dashboard</h1>
-        <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
-                <li class="breadcrumb-item"><a class="text-white" href="/Farmer/Products">My Products</a></li>
-                <li class="breadcrumb-item text-white active" aria-current="page">Edit Product</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<!-- Page Header End -->
 
 <div class="container py-4">
     <div class="farmer-container">
@@ -87,24 +507,10 @@
             </div>
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/Farmer/Products">
-                        <i class="fa fa-leaf"></i> My Products
-                    </a>
+                    <a class="nav-link active" href="/Farmer/Products">My Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/Farmer/CreateProduct">
-                        <i class="fa fa-plus-circle"></i> Add New Product
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Farmer/Profile">
-                        <i class="fa fa-user"></i> My Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Marketplace">
-                        <i class="fa fa-store"></i> Marketplace
-                    </a>
+                    <a class="nav-link" href="/Farmer/CreateProduct">Add New Product</a>
                 </li>
             </ul>
         </div>
@@ -114,20 +520,13 @@
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="/Farmer/Products" class="list-group-item list-group-item-action active">
-                            <i class="fa fa-leaf me-2"></i> My Products
-                        </a>
-                        <a href="/Farmer/CreateProduct" class="list-group-item list-group-item-action">
-                            <i class="fa fa-plus-circle me-2"></i> Add New Product
-                        </a>
-                        <a href="/Farmer/Profile" class="list-group-item list-group-item-action">
-                            <i class="fa fa-user me-2"></i> My Profile
-                        </a>
+                        <a href="/Farmer/Products" class="list-group-item list-group-item-action active">My Products</a>
+                        <a href="/Farmer/CreateProduct" class="list-group-item list-group-item-action">Add New Product</a>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Main Content Area -->
         <div class="farmer-content">
             <!-- Page Title -->
@@ -136,8 +535,7 @@
                 <p>Update information for your existing product</p>
                 <div class="page-divider"></div>
             </div>
-            
-            
+
             <!-- Edit Product Form -->
             <div class="form-card">
                 <form asp-action="EditProduct" enctype="multipart/form-data">
@@ -145,48 +543,44 @@
                     <input type="hidden" asp-for="ProductId" />
                     <input type="hidden" asp-for="UserId" />
                     <input type="hidden" asp-for="ImageUrlPath" />
-                    
+
                     <!-- Validation Summary -->
                     @if (!ViewData.ModelState.IsValid)
                     {
                         <div class="alert-validation">
-                            <strong><i class="fa fa-exclamation-circle"></i> Please fix the following errors:</strong>
+                            <strong>Please fix the following errors:</strong>
                             <div asp-validation-summary="All" class="text-danger"></div>
                         </div>
                     }
-                    
+
                     <!-- Product Information Section -->
                     <div class="form-section">
-                        <h5 class="form-section-title">
-                            <i class="fa fa-info-circle"></i> Product Information
-                        </h5>
-                        
+                        <h5 class="form-section-title">Product Information</h5>
+
                         <div class="form-group">
                             <label asp-for="Name" class="form-label">
-                                <i class="fa fa-tag"></i> Product Name <span class="required-indicator">*</span>
+                                Product Name <span class="required-indicator">*</span>
                             </label>
                             <input asp-for="Name" class="form-control" placeholder="Enter product name" required />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label asp-for="Description" class="form-label">
-                                <i class="fa fa-align-left"></i> Description <span class="required-indicator">*</span>
+                                Description <span class="required-indicator">*</span>
                             </label>
                             <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your product in detail" required></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
                     </div>
-                    
+
                     <!-- Classification Section -->
                     <div class="form-section">
-                        <h5 class="form-section-title">
-                            <i class="fa fa-sitemap"></i> Classification
-                        </h5>
-                        
+                        <h5 class="form-section-title">Classification</h5>
+
                         <div class="form-group">
                             <label asp-for="Category" class="form-label">
-                                <i class="fa fa-folder"></i> Category <span class="required-indicator">*</span>
+                                Category <span class="required-indicator">*</span>
                             </label>
                             <select asp-for="Category" class="form-select" required>
                                 <option value="">Select a category</option>
@@ -199,27 +593,23 @@
                             </select>
                             <span asp-validation-for="Category" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label asp-for="ProductionDate" class="form-label">
-                                <i class="fa fa-calendar-alt"></i> Production Date <span class="required-indicator">*</span>
+                                Production Date <span class="required-indicator">*</span>
                             </label>
                             <input asp-for="ProductionDate" class="form-control" type="date" required />
                             <span asp-validation-for="ProductionDate" class="text-danger"></span>
                         </div>
                     </div>
-                    
+
                     <!-- Media Section -->
                     <div class="form-section">
-                        <h5 class="form-section-title">
-                            <i class="fa fa-image"></i> Product Media
-                        </h5>
-                        
+                        <h5 class="form-section-title">Product Media</h5>
+
                         <div class="form-group">
-                            <label for="imageFile" class="form-label">
-                                <i class="fa fa-upload"></i> Product Image
-                            </label>
-                            
+                            <label for="imageFile" class="form-label">Product Image</label>
+
                             @if (!string.IsNullOrEmpty(Model.ImageUrlPath))
                             {
                                 <div class="image-preview-container">
@@ -229,7 +619,7 @@
                                     </div>
                                 </div>
                             }
-                            
+
                             <div class="file-input-container">
                                 <div class="file-input-button">
                                     <i class="fa fa-cloud-upload-alt"></i> Choose New Image
@@ -238,14 +628,14 @@
                                 <span class="file-name" id="fileName">No file chosen</span>
                             </div>
                             <div class="form-text">Upload a new image to replace the current one (optional). Leave empty to keep the current image.</div>
-                            
+
                             <div id="newImagePreviewContainer" style="display: none; margin-top: 15px;">
                                 <p class="mb-2"><strong>New Image Preview:</strong></p>
                                 <img id="newImagePreview" src="#" alt="New Image Preview" class="img-fluid rounded" style="max-height: 200px;">
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Form Buttons -->
                     <div class="form-buttons">
                         <a asp-action="Products" class="btn btn-farmer-secondary">

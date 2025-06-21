@@ -5,26 +5,415 @@
     ViewData["Title"] = "Products";
     Layout = "~/Views/Shared/_Layout.cshtml";
     
-    // Calculate statistics for dashboard
-    int totalProducts = Model.Count();
-    int totalFarmers = Model.Select(p => p.User.Id).Distinct().Count();
-    var categoryCounts = Model.GroupBy(p => p.Category)
-        .Select(g => new { Category = g.Key, Count = g.Count() })
-        .OrderByDescending(x => x.Count)
-        .ToList();
-    
-    var recentProducts = Model.Where(p => p.ProductionDate >= DateTime.Now.AddMonths(-1)).Count();
-    var oldestProduct = Model.OrderBy(p => p.ProductionDate).FirstOrDefault()?.ProductionDate;
-    var newestProduct = Model.OrderByDescending(p => p.ProductionDate).FirstOrDefault()?.ProductionDate;
 }
 
+<style>
+    :root {
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
+        --info: #17a2b8;
+    }
 
-<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+    }
 
-    <a href="/" class="navbar-brand d-flex align-items-center">
-        <img src="img/logo.png" alt="logo"
-             style="height: 100px; width: 100px; margin-right: 10px;">
-    </a>
+    /* Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: 60px;
+    }
+
+    /* Container Styling */
+    .employee-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Sidebar Styling */
+    .employee-sidebar {
+        min-width: 280px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .employee-avatar {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0;
+        color: var(--text-dark);
+        padding: 1rem 1.5rem;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    /* Mobile Sidebar */
+    .list-group-item {
+        border: none;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+    }
+
+    .list-group-item.active {
+        background-color: var(--olive-green);
+        color: white;
+    }
+
+    /* Main Content */
+    .employee-content {
+        flex: 1;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .page-title {
+        background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .page-title h1 {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-title p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .page-divider {
+        height: 3px;
+        background: linear-gradient(90deg, var(--olive-green), var(--forest-green));
+        margin: 1rem auto 0;
+        width: 100px;
+        border-radius: 2px;
+    }
+
+    /* Filter Card Styling */
+    .filter-card {
+        margin: 2rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        border-left: 4px solid var(--olive-green);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .filter-title {
+        color: var(--forest-green);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-green);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--olive-green);
+        box-shadow: 0 0 0 0.2rem rgba(122, 152, 11, 0.25);
+    }
+
+    .btn-search {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0 8px 8px 0;
+        transition: all 0.3s ease;
+    }
+
+    .btn-search:hover {
+        background: linear-gradient(135deg, var(--forest-green) 0%, var(--dark-green) 100%);
+        color: white;
+    }
+
+    /* Category Distribution */
+    .category-badge {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .category-badge .badge {
+        background: rgba(255,255,255,0.3) !important;
+    }
+
+    /* Alert Styling */
+    .alert-info {
+        background: linear-gradient(135deg, rgba(23, 162, 184, 0.1) 0%, rgba(23, 162, 184, 0.05) 100%);
+        border: 1px solid rgba(23, 162, 184, 0.3);
+        color: var(--info);
+        border-radius: 8px;
+        margin: 2rem;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, rgba(213, 175, 4, 0.1) 0%, rgba(213, 175, 4, 0.05) 100%);
+        border: 1px solid rgba(213, 175, 4, 0.3);
+        color: var(--golden-yellow);
+        border-radius: 8px;
+    }
+
+    /* Products Grid */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+
+    .product-card {
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .product-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .product-category {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .product-details {
+        padding: 1.5rem;
+    }
+
+    .product-title {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+    }
+
+    .product-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .product-info p {
+        margin: 0.5rem 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-info i {
+        color: var(--olive-green);
+        width: 16px;
+    }
+
+    .btn-view-details {
+        background: linear-gradient(135deg, var(--forest-green) 0%, var(--olive-green) 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-view-details:hover {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .employee-container {
+            flex-direction: column;
+        }
+        
+        .products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+        
+        .filter-card {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .products-grid {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+        }
+        
+        .filter-card {
+            margin: 1rem;
+            padding: 1rem;
+        }
+        
+        .page-title {
+            padding: 1.5rem;
+        }
+        
+        .page-title h1 {
+            font-size: 1.75rem;
+        }
+        
+        .product-card {
+            margin-bottom: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .filter-card .row {
+            margin: 0;
+        }
+        
+        .filter-card .col-md-3,
+        .filter-card .col-md-6 {
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+        }
+    }
+</style>
+
+    <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+        <a href="/" class="navbar-brand d-flex align-items-center">
+            <img src="~/img/logo.png" alt="logo"
+                 style="height: 100px; width: 100px; margin-right: 10px;">
+        </a>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -32,14 +421,13 @@
         <div class="navbar-nav py-0">
             <a href="/" class="nav-item nav-link">Home</a>
             <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
-            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
             @if (User.IsInRole("Farmer"))
             {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
                     <div class="dropdown-menu m-0">
                         <a href="/Farmer/Products" class="dropdown-item">My Products</a>
-                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
                     </div>
                 </div>
             }
@@ -70,20 +458,6 @@
 </nav>
 <!-- Navbar End -->
 
-<!-- Page Header Start -->
-<div class="container-fluid page-header py-5 mb-5" >
-    <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">Employee Dashboard</h1>
-        <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
-                <li class="breadcrumb-item text-white active" aria-current="page">Products</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<!-- Page Header End -->
-
 <div class="container py-4">
     <div class="employee-container">
         <!-- Sidebar Navigation -->
@@ -98,19 +472,13 @@
             </div>
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/Employee/Products">
-                        <i class="fa fa-box"></i> Products
-                    </a>
+                    <a class="nav-link active" href="/Employee/Products">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/Employee/Farmers">
-                        <i class="fa fa-users"></i> Farmers
-                    </a>
+                    <a class="nav-link" href="/Employee/Farmers">Farmers</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/Employee/CreateFarmer">
-                        <i class="fa fa-user-plus"></i> Add New Farmer
-                    </a>
+                    <a class="nav-link" href="/Employee/CreateFarmer">Add New Farmer</a>
                 </li>
             </ul>
         </div>
@@ -120,20 +488,14 @@
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="/Employee/Products" class="list-group-item list-group-item-action active">
-                            <i class="fa fa-box me-2"></i> Products
-                        </a>
-                        <a href="/Employee/Farmers" class="list-group-item list-group-item-action">
-                            <i class="fa fa-users me-2"></i> Farmers
-                        </a>
-                        <a href="/Employee/CreateFarmer" class="list-group-item list-group-item-action">
-                            <i class="fa fa-user-plus me-2"></i> Add New Farmer
-                        </a>
+                        <a href="/Employee/Products" class="list-group-item list-group-item-action active">Products</a>
+                        <a href="/Employee/Farmers" class="list-group-item list-group-item-action">Farmers</a>
+                        <a href="/Employee/CreateFarmer" class="list-group-item list-group-item-action">Add New Farmer</a>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Main Content Area -->
         <div class="employee-content">
             <!-- Page Title -->
@@ -142,75 +504,24 @@
                 <p>Manage and view all products from farmers</p>
                 <div class="page-divider"></div>
             </div>
-            
-            <!-- Dashboard Stats -->
-            <div class="stats-container">
-                <div class="stat-card total">
-                    <div class="stat-icon">
-                        <i class="fa fa-boxes"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@totalProducts</h3>
-                        <p>Total Products</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card farmers">
-                    <div class="stat-icon">
-                        <i class="fa fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@totalFarmers</h3>
-                        <p>Farmers</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card categories">
-                    <div class="stat-icon">
-                        <i class="fa fa-tags"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@(categoryCounts.Count)</h3>
-                        <p>Categories</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card recent">
-                    <div class="stat-icon">
-                        <i class="fa fa-calendar-alt"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>@recentProducts</h3>
-                        <p>Added This Month</p>
-                    </div>
-                </div>
-            </div>
-            
+
             <!-- Filter Card -->
             <div class="filter-card">
-                <h5 class="filter-title">
-                    <i class="fa fa-filter"></i> Filter Products
-                </h5>
-                
+                <h5 class="filter-title">Filter Products</h5>
+
                 <form asp-action="Products" method="get" class="row g-3">
                     <div class="col-md-3">
-                        <label class="form-label">
-                            <i class="fa fa-calendar"></i> From Date
-                        </label>
+                        <label class="form-label">From Date</label>
                         <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate" />
                     </div>
-                    
+
                     <div class="col-md-3">
-                        <label class="form-label">
-                            <i class="fa fa-calendar"></i> To Date
-                        </label>
+                        <label class="form-label">To Date</label>
                         <input type="date" name="toDate" class="form-control" value="@ViewBag.ToDate" />
                     </div>
-                    
+
                     <div class="col-md-3">
-                        <label class="form-label">
-                            <i class="fa fa-tag"></i> Category
-                        </label>
+                        <label class="form-label">Category</label>
                         <select name="category" class="form-select">
                             <option value="">All Categories</option>
                             @foreach (var category in ViewBag.Categories)
@@ -221,10 +532,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label">
-                            <i class="fa fa-user"></i> Farmer
-                        </label>
-
+                        <label class="form-label">Farmer</label>
                         @if (ViewBag.Farmers != null && ViewBag.Farmers.Count > 0)
                         {
                             <select name="farmerId" class="form-select">
@@ -245,11 +553,8 @@
                         }
                     </div>
 
-                    
                     <div class="col-md-6">
-                        <label class="form-label">
-                            <i class="fa fa-search"></i> Search
-                        </label>
+                        <label class="form-label">Search</label>
                         <div class="input-group">
                             <input type="text" name="searchString" class="form-control" placeholder="Search..." value="@ViewBag.SearchString" />
                             <button type="submit" class="btn btn-search">
@@ -259,29 +564,7 @@
                     </div>
                 </form>
             </div>
-            
-            <!-- Category Distribution -->
-            @if (categoryCounts.Any())
-            {
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="bg-white p-4 rounded shadow">
-                            <h5 class="mb-3 text-primary">
-                                <i class="fa fa-chart-pie me-2"></i> Category Distribution
-                            </h5>
-                            <div class="d-flex flex-wrap gap-2">
-                                @foreach (var category in categoryCounts)
-                                {
-                                    <div class="category-badge">
-                                        @category.Category <span class="badge bg-primary rounded-pill ms-2">@category.Count</span>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-            
+
             <!-- Product Listing -->
             @if (!Model.Any())
             {

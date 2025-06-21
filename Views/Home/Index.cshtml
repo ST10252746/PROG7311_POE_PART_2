@@ -14,14 +14,13 @@
         <div class="navbar-nav py-0">
             <a href="/" class="nav-item nav-link active">Home</a>
             <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
-            <a href="/marketplace" class="nav-item nav-link">Energy Marketplace</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
             @if (User.IsInRole("Farmer"))
             {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
                     <div class="dropdown-menu m-0">
                         <a href="/Farmer/Products" class="dropdown-item">My Products</a>
-                        <a href="/Farmer/Profile" class="dropdown-item">My Profile</a>
                     </div>
                 </div>
             }
@@ -73,7 +72,7 @@
                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-start p-5"
                      style="background-color: rgba(0, 100, 0, 0.5);">
                     <h1 class="display-5 text-white">Green Energy Marketplace</h1>
-                    <a href="/marketplace" class="btn btn-light px-4 py-2">Browse Solutions</a>
+                    <a href="/energymarket" class="btn btn-light px-4 py-2">Browse Solutions</a>
                 </div>
             </div>
         </div>
