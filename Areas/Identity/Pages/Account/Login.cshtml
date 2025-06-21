@@ -1,0 +1,488 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+<style>
+    :root {
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
+        --danger: #dc3545;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+        min-height: 100vh;
+    }
+
+    /* Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: 60px;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+    }
+
+    .page-header h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Login Container */
+    .login-container {
+        max-width: 450px;
+        margin: 3rem auto;
+        padding: 0;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Login Header */
+    .login-header {
+        background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .login-header h2 {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+    }
+
+    .login-header p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .page-divider {
+        height: 3px;
+        background: linear-gradient(90deg, var(--olive-green), var(--forest-green));
+        margin: 1rem auto 0;
+        width: 100px;
+        border-radius: 2px;
+    }
+
+    /* Login Form */
+    .login-form {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-green);
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: var(--white);
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--olive-green);
+        box-shadow: 0 0 0 0.2rem rgba(122, 152, 11, 0.25);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+
+    /* Password Field */
+    .password-container {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: var(--olive-green);
+    }
+
+    /* Checkbox Styling */
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        gap: 0.75rem;
+    }
+
+    .form-check input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--olive-green);
+        cursor: pointer;
+    }
+
+    .form-check label {
+        color: var(--text-dark);
+        font-weight: 500;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    /* Submit Button */
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        border: none;
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(122, 152, 11, 0.3);
+        cursor: pointer;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(122, 152, 11, 0.4);
+        background: linear-gradient(135deg, var(--forest-green) 0%, var(--dark-green) 100%);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    /* Links */
+    .forgot-password-link {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .forgot-password-link a {
+        color: var(--olive-green);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .forgot-password-link a:hover {
+        color: var(--forest-green);
+        text-decoration: underline;
+    }
+
+    /* Validation Messages */
+    .text-danger {
+        color: var(--danger) !important;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    /* Loading State */
+    .btn-login.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .btn-login.loading::after {
+        content: "";
+        width: 16px;
+        height: 16px;
+        margin-left: 10px;
+        border: 2px solid transparent;
+        border-top: 2px solid white;
+        border-radius: 50%;
+        display: inline-block;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Animation for form entrance */
+    .login-container {
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Focus animations */
+    .form-group {
+        transition: transform 0.3s ease;
+    }
+
+    .form-group:focus-within {
+        transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .login-container {
+            margin: 2rem 1rem;
+            max-width: none;
+        }
+        
+        .login-header {
+            padding: 1.5rem;
+        }
+        
+        .login-header h2 {
+            font-size: 1.75rem;
+        }
+        
+        .login-form {
+            padding: 1.5rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .login-container {
+            margin: 1rem 0.5rem;
+        }
+        
+        .login-header {
+            padding: 1rem;
+        }
+        
+        .login-form {
+            padding: 1rem;
+        }
+        
+        .form-control {
+            padding: 0.625rem 0.875rem;
+        }
+    }
+</style>
+
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="~/img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<div class="login-container">
+    <!-- Login Header -->
+    <div class="login-header">
+        <h2>Welcome Back</h2>
+        <p>Sign in to your account</p>
+        <div class="page-divider"></div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="login-form">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Input.Email" class="form-label">Email Address</label>
+                <input asp-for="Input.Email" class="form-control" type="email" placeholder="Enter your email" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Password" class="form-label">Password</label>
+                <div class="password-container">
+                    <input asp-for="Input.Password" class="form-control" type="password" id="password-field" placeholder="Enter your password" />
+                    <span class="password-toggle" onclick="togglePasswordVisibility()">
+                        <i class="fa fa-eye" id="password-toggle-icon"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check">
+                <input asp-for="Input.RememberMe" type="checkbox" id="rememberMe" />
+                <label asp-for="Input.RememberMe" for="rememberMe">Remember me on this device</label>
+            </div>
+
+            <button type="submit" class="btn-login" id="login-submit">
+                Sign In
+            </button>
+
+            <div class="forgot-password-link">
+                <a asp-page="./ForgotPassword">Forgot your password?</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Function to toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password-field');
+            const passwordToggleIcon = document.getElementById('password-toggle-icon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordToggleIcon.classList.remove('fa-eye');
+                passwordToggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordToggleIcon.classList.remove('fa-eye-slash');
+                passwordToggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Add animation and interactive elements when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus the email field automatically when page loads
+            setTimeout(() => {
+                const emailInput = document.querySelector('input[type="email"]');
+                if (emailInput) {
+                    emailInput.focus();
+                }
+            }, 800);
+            
+            // Interactive logo
+            const logoIcon = document.querySelector('.logo-icon');
+            if (logoIcon) {
+                logoIcon.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05) rotate(5deg)';
+                });
+                
+                logoIcon.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0deg)';
+                });
+            }
+            
+            // Input field animations
+            const formInputs = document.querySelectorAll('.form-control');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-3px)';
+                    this.parentElement.style.transition = 'transform 0.3s ease';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Button hover effect
+            const submitButton = document.getElementById('login-submit');
+            if (submitButton) {
+                submitButton.addEventListener('mouseover', function() {
+                    this.style.transform = 'translateY(-3px)';
+                    this.style.boxShadow = '0 12px 25px rgba(0, 171, 102, 0.4)';
+                });
+                
+                submitButton.addEventListener('mouseout', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            }
+        });
+    </script>
+}

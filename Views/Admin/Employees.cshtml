@@ -1,0 +1,570 @@
+﻿<!-- Views/Admin/Employees.cshtml -->
+@model IEnumerable<ST10252746_PROG7311_POE_PART_2.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Employees";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Calculate statistics for dashboard
+    int totalEmployees = Model.Count();
+}
+
+<style>
+    :root {
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
+        --danger: #dc3545;
+        --info: #17a2b8;
+        --admin-purple: #669506;
+        --admin-indigo: #8ed204;
+    }
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+    }
+
+    /* Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: 60px;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+    }
+
+    .page-header h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Container Styling */
+    .admin-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Sidebar Styling */
+    .admin-sidebar {
+        min-width: 280px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: linear-gradient(135deg, var(--admin-purple) 0%, var(--admin-indigo) 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .admin-avatar {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0;
+        color: var(--text-dark);
+        padding: 1rem 1.5rem;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(111, 66, 193, 0.1);
+        color: var(--admin-purple);
+        border-left-color: var(--admin-purple);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(111, 66, 193, 0.1);
+        color: var(--admin-purple);
+        border-left-color: var(--admin-purple);
+    }
+
+    /* Mobile Sidebar */
+    .list-group-item {
+        border: none;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: rgba(111, 66, 193, 0.1);
+        color: var(--admin-purple);
+    }
+
+    .list-group-item.active {
+        background-color: var(--admin-purple);
+        color: white;
+    }
+
+    /* Main Content */
+    .admin-content {
+        flex: 1;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .page-title {
+        background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .page-title h1 {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-title p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .page-divider {
+        height: 3px;
+        background: linear-gradient(90deg, var(--admin-purple), var(--admin-indigo));
+        margin: 1rem auto 0;
+        width: 100px;
+        border-radius: 2px;
+    }
+
+   
+
+    /* Action Buttons */
+    .action-buttons {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #e9ecef;
+        text-align: center;
+    }
+
+    .btn-add-employee {
+        background: linear-gradient(135deg, var(--admin-purple) 0%, var(--admin-indigo) 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(111, 66, 193, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-add-employee:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(111, 66, 193, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-muted);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--admin-purple);
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+
+    .empty-state h4 {
+        color: var(--text-dark);
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Table Container */
+    .employees-table-container {
+        padding: 2rem;
+    }
+
+    .table-responsive {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Table Styling */
+    .employees-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        margin: 0;
+    }
+
+    .employees-table thead {
+        background: linear-gradient(135deg, var(--admin-purple) 0%, var(--admin-indigo) 100%);
+        color: white;
+    }
+
+    .employees-table th {
+        padding: 1.2rem 1rem;
+        text-align: left;
+        font-weight: 600;
+        border: none;
+        font-size: 0.95rem;
+    }
+
+    .employees-table tbody tr {
+        border-bottom: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .employees-table tbody tr:hover {
+        background-color: rgba(111, 66, 193, 0.05);
+    }
+
+    .employees-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .employees-table td {
+        padding: 1.2rem 1rem;
+        vertical-align: middle;
+        border: none;
+    }
+
+    .employees-table td[data-label="Name"] {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .employees-table td[data-label="Email"] {
+        color: var(--text-muted);
+    }
+
+    /* Button Styling */
+    .btn-delete {
+        background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .admin-container {
+            flex-direction: column;
+        }
+        
+        .stats-container {
+            grid-template-columns: 1fr;
+            padding: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .employees-table-container {
+            padding: 1rem;
+        }
+        
+        .page-title {
+            padding: 1.5rem;
+        }
+        
+        .page-title h1 {
+            font-size: 1.75rem;
+        }
+
+        .empty-state {
+            padding: 2rem 1rem;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+        }
+
+        /* Mobile Table Styling */
+        .employees-table {
+            font-size: 0.875rem;
+        }
+
+        .employees-table th,
+        .employees-table td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .employees-table thead {
+            display: none;
+        }
+
+        .employees-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            background: white;
+        }
+
+        .employees-table tbody tr:hover {
+            background-color: white;
+        }
+
+        .employees-table td {
+            display: block;
+            padding: 0.5rem 0;
+            border: none;
+            text-align: left;
+        }
+
+        .employees-table td:before {
+            content: attr(data-label) ": ";
+            font-weight: 600;
+            color: var(--admin-purple);
+            display: inline-block;
+            width: 100px;
+        }
+
+        .employees-table td[data-label="Actions"] {
+            text-align: center;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .employees-table td[data-label="Actions"]:before {
+            display: none;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .employees-table td:before {
+            width: 80px;
+            font-size: 0.8rem;
+        }
+
+        .btn-delete {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .stat-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .stat-icon {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="~/img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<div class="container py-4">
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <div class="admin-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="admin-avatar">
+                        <i class="fa fa-user-shield"></i>
+                    </div>
+                    Admin Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Admin/Employees">Employees</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Admin/CreateEmployee">Add New Employee</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Admin/Employees" class="list-group-item list-group-item-action active">Employees</a>
+                        <a href="/Admin/CreateEmployee" class="list-group-item list-group-item-action">Add New Employee</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="admin-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Employees</h1>
+                <p>Manage system employees with administrative access</p>
+                <div class="page-divider"></div>
+            </div>
+
+            <!-- Employees Listing -->
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="fa fa-users-cog"></i>
+                    <h4>No Employees Yet</h4>
+                    <p>No employees have been added yet. Click the button below to get started.</p>
+                    <a asp-action="CreateEmployee" class="btn btn-add-employee">
+                        <i class="fa fa-user-plus"></i> Add Your First Employee
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="employees-table-container">
+                    <div class="table-responsive">
+                        <table class="employees-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td data-label="Name">@item.Firstname @item.Lastname</td>
+                                        <td data-label="Email">@item.Email</td>
+                                        <td data-label="Actions">
+                                            <a asp-action="DeleteEmployee" asp-route-id="@item.Id" class="btn btn-delete">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+@* /*
+------------------------------------------------------------------------------
+                        CODE ATTRIBUTION:
+------------------------------------------------------------------------------
+
+Author: Microsoft Learn
+Link:https://learn.microsoft.com/enus/aspnet/core/security/authentication/?view=aspnetcore-8.0
+Date Accessed: 01 May 2025
+
+Author: Microsoft Learn
+Link: https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/validation?view=aspnetcore-8.0
+Date Accessed: 04 May 2025
+
+Author: Daryl Young
+Link: https://vocal.media/geeks/how-to-connect-sql-server-database-in-asp-net-core-mvc
+Date Accessed: 03 May 2025
+
+
+Template for Styling
+Author: ThemeWagon
+Link: https://themewagon.com/themes/free-bootstrap-5-html5-renewable-energy-website-template-solartec/
+Date Accessed: 03 May 2025
+
+Author: w3schools
+Link: https://www.w3schools.com/css/
+Date Accessed: 08 May 2025
+
+All PAGES are edited but layout depicted from ThemeWagon- Solartec- Free Bootstrap 5 HTML5 Renewable Energy Website Template
+(https://themewagon.com/themes/free-bootstrap-5-html5-renewable-energy-website-template-solartec/ )
+
+
+------------------------------------------------------------------------------
+                        CODE ATTRIBUTION
+------------------------------------------------------------------------------
+*/
+ *@
+
+<head>
+    <meta charset="utf-8">
+    <title>Agri-Energy connect</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="~/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="~/css/style.css" rel="stylesheet">
+
+    <!-- Font Awesome-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid text-white mt-5" style="background-color: #115631;">
+        <div class="container">
+            <div class="row gx-5">
+                <div class="col-lg-12 col-md-6">
+                    <div class="row gx-5">
+                        <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
+                            <h4 class="text-white mb-4">Quick Links</h4>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-white mb-2" href="/Home"><i class="bi bi-arrow-right text-white me-2"></i>Home</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
+                            <h4 class="text-white mb-4">Popular Links</h4>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-white mb-2" href="/farminghub"><i class="bi bi-arrow-right text-white me-2"></i>Farming Hub</a>
+                                <a class="text-white mb-2" href="/energymarket><i class="bi bi-arrow-right text-white me-2"></i>Energy Marketplace</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">
+                &copy; <a class="text-secondary fw-bold" href="#">Agri-Energy Connect Platform</a>. By
+                <a class="text-secondary fw-bold" href="#">ST10252746 - THESHARA NARAIN </a>. For
+                <a class="text-secondary fw-bold" href="#">Programming 3A | PROG7311</a>.
+                To access GitHub Repository click
+                <a class="text-secondary fw-bold" href="https://github.com/ST10252746/PROG7311_POE_PART_2.git">here</a>.
+            </p>
+        </div>
+    </div>
+    <!-- Footer End -->
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/easing/easing.min.js"></script>
+    <script src="~/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/lib/counterup/counterup.min.js"></script>
+    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <!-- Template Javascript -->
+    <script src="~/js/main.js"></script>
+</body>
+
+</html>

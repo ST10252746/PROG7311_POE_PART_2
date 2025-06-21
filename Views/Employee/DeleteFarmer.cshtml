@@ -1,0 +1,572 @@
+﻿<!-- Views/Employee/DeleteFarmer.cshtml -->
+@model ST10252746_PROG7311_POE_PART_2.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Delete Farmer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    :root {
+        --dark-green: #074327;
+        --olive-green: #7a980b;
+        --forest-green: #0f7233;
+        --golden-yellow: #d5af04;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success: var(--olive-green);
+        --warning: var(--golden-yellow);
+        --danger: #dc3545;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+    }
+
+    /* Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand img {
+        height: 60px;
+        width: 60px;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+    }
+
+    .page-header h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Container Styling */
+    .employee-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Sidebar Styling */
+    .employee-sidebar {
+        min-width: 280px;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .employee-avatar {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0;
+        color: var(--text-dark);
+        padding: 1rem 1.5rem;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+        border-left-color: var(--olive-green);
+    }
+
+    /* Mobile Sidebar */
+    .list-group-item {
+        border: none;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: rgba(122, 152, 11, 0.1);
+        color: var(--olive-green);
+    }
+
+    .list-group-item.active {
+        background-color: var(--olive-green);
+        color: white;
+    }
+
+    /* Main Content */
+    .employee-content {
+        flex: 1;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .page-title {
+        background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .page-title h1 {
+        color: var(--dark-green);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-title p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .page-divider {
+        height: 3px;
+        background: linear-gradient(90deg, var(--olive-green), var(--forest-green));
+        margin: 1rem auto 0;
+        width: 100px;
+        border-radius: 2px;
+    }
+
+    /* Delete Card Styling */
+    .delete-card {
+        margin: 2rem;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        border: 2px solid #f8d7da;
+    }
+
+    .delete-card-header {
+        background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+    }
+
+    .delete-card-header h3 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+    }
+
+    .delete-card-header i {
+        font-size: 1.75rem;
+        color: #fff3cd;
+    }
+
+    .delete-card-body {
+        padding: 2rem;
+    }
+
+    /* Warning Box */
+    .warning-box {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .warning-box i {
+        color: var(--danger);
+        font-size: 1.5rem;
+        margin-top: 0.25rem;
+        flex-shrink: 0;
+    }
+
+    .warning-box p {
+        color: var(--danger);
+        margin: 0;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    /* Farmer Information */
+    .farmer-info {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--olive-green);
+    }
+
+    .info-title {
+        color: var(--forest-green);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--olive-green);
+    }
+
+    .info-title i {
+        color: var(--olive-green);
+        font-size: 1.2rem;
+    }
+
+    /* Info List */
+    .info-list {
+        margin-bottom: 0;
+    }
+
+    .info-list dt {
+        color: var(--dark-green);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-list dt i {
+        color: var(--olive-green);
+        font-size: 0.9rem;
+        width: 16px;
+    }
+
+    .info-list dd {
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+        font-size: 1rem;
+    }
+
+    /* Form Buttons */
+    .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid #f8f9fa;
+    }
+
+    .btn-employee-secondary {
+        background: var(--white);
+        border: 2px solid var(--text-muted);
+        color: var(--text-muted);
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-employee-secondary:hover {
+        border-color: var(--olive-green);
+        color: var(--olive-green);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .btn-employee-danger {
+        background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-employee-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(220, 53, 69, 0.4);
+        color: white;
+        background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .employee-container {
+            flex-direction: column;
+        }
+        
+        .delete-card {
+            margin: 1rem;
+        }
+        
+        .delete-card-body {
+            padding: 1.5rem;
+        }
+        
+        .form-buttons {
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
+        
+        .btn-employee-secondary,
+        .btn-employee-danger {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-title {
+            padding: 1.5rem;
+        }
+        
+        .page-title h1 {
+            font-size: 1.75rem;
+        }
+        
+        .delete-card-header {
+            padding: 1rem 1.5rem;
+        }
+        
+        .delete-card-header h3 {
+            font-size: 1.25rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .delete-card-body {
+            padding: 1rem;
+        }
+        
+        .farmer-info {
+            padding: 1.5rem;
+        }
+        
+        .warning-box {
+            padding: 1rem;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .warning-box i {
+            margin-top: 0;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .info-list dt,
+        .info-list dd {
+            font-size: 0.9rem;
+        }
+        
+        .delete-card-header i {
+            font-size: 1.5rem;
+        }
+        
+        .warning-box i {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="~/img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+
+<div class="container py-4">
+    <div class="employee-container">
+        <!-- Sidebar Navigation -->
+        <div class="employee-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="employee-avatar">
+                        <i class="fa fa-user-tie"></i>
+                    </div>
+                    Employee Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Employee/Farmers">Farmers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/CreateFarmer">Add New Farmer</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Employee/Products" class="list-group-item list-group-item-action">Products</a>
+                        <a href="/Employee/Farmers" class="list-group-item list-group-item-action active">Farmers</a>
+                        <a href="/Employee/CreateFarmer" class="list-group-item list-group-item-action">Add New Farmer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="employee-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Delete Farmer</h1>
+                <p>Remove a farmer from the platform</p>
+                <div class="page-divider"></div>
+            </div>
+
+            <!-- Delete Confirmation Card -->
+            <div class="delete-card">
+                <div class="delete-card-header">
+                    <h3><i class="fa fa-exclamation-triangle"></i> Are you sure you want to delete this farmer?</h3>
+                </div>
+
+                <div class="delete-card-body">
+                    <!-- Warning Message -->
+                    <div class="warning-box">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p>All products associated with this farmer will also be deleted. This action cannot be undone.</p>
+                    </div>
+
+                    <!-- Farmer Information -->
+                    <div class="farmer-info">
+                        <h5 class="info-title">
+                            <i class="fa fa-user"></i> Farmer Details
+                        </h5>
+
+                        <dl class="row info-list">
+                            <dt class="col-sm-3"><i class="fa fa-user"></i> Name:</dt>
+                            <dd class="col-sm-9">@Model.Firstname @Model.Lastname</dd>
+
+                            <dt class="col-sm-3"><i class="fa fa-envelope"></i> Email:</dt>
+                            <dd class="col-sm-9">@Model.Email</dd>
+
+                            <dt class="col-sm-3"><i class="fa fa-phone"></i> Phone:</dt>
+                            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Not provided" : Model.PhoneNumber)</dd>
+
+                            <dt class="col-sm-3"><i class="fa fa-map-marker-alt"></i> Location:</dt>
+                            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Location) ? "Not provided" : Model.Location)</dd>
+                        </dl>
+                    </div>
+
+                    <!-- Delete Form and Buttons -->
+                    <form asp-action="DeleteFarmer">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-buttons">
+                            <a asp-action="Farmers" class="btn btn-employee-secondary">
+                                <i class="fa fa-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-employee-danger">
+                                <i class="fa fa-trash"></i> Delete Permanently
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

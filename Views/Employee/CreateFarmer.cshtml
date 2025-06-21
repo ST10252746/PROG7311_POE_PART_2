@@ -1,0 +1,685 @@
+﻿<!-- Views/Employee/CreateFarmer.cshtml -->
+@model ST10252746_PROG7311_POE_PART_2.Models.RegisterFarmerViewModel
+@{
+    ViewData["Title"] = "Add New Farmer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ <style>
+        :root {
+            --dark-green: #074327;
+            --olive-green: #7a980b;
+            --forest-green: #0f7233;
+            --golden-yellow: #d5af04;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-muted: #6c757d;
+            --success: var(--olive-green);
+            --warning: var(--golden-yellow);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand img {
+            height: 60px;
+            width: 60px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--forest-green) 100%);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .page-header h1 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        /* Container Styling */
+        .employee-container {
+            display: flex;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar Styling */
+        .employee-sidebar {
+            min-width: 280px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            height: fit-content;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .sidebar-header h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .employee-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 0;
+            color: var(--text-dark);
+            padding: 1rem 1.5rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(122, 152, 11, 0.1);
+            color: var(--olive-green);
+            border-left-color: var(--olive-green);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: rgba(122, 152, 11, 0.1);
+            color: var(--olive-green);
+            border-left-color: var(--olive-green);
+        }
+
+        /* Mobile Sidebar */
+        .list-group-item {
+            border: none;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(122, 152, 11, 0.1);
+            color: var(--olive-green);
+        }
+
+        .list-group-item.active {
+            background-color: var(--olive-green);
+            color: white;
+        }
+
+        /* Main Content */
+        .employee-content {
+            flex: 1;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .page-title {
+            background: linear-gradient(135deg, var(--golden-yellow) 0%, #f4d03f 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .page-title h1 {
+            color: var(--dark-green);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Form Styling */
+        .form-card {
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 1rem;
+        }
+
+        .form-section-title {
+            color: var(--forest-green);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--olive-green);
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-green);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .required-indicator {
+            color: #dc3545;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--olive-green);
+            box-shadow: 0 0 0 0.2rem rgba(122, 152, 11, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Password Field Styling */
+        .password-field-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--olive-green);
+        }
+
+        .password-strength-meter {
+            height: 4px;
+            background-color: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-value {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Alert Styling */
+        .alert-validation {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Button Styling */
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f8f9fa;
+        }
+
+        .btn-employee-primary {
+            background: linear-gradient(135deg, var(--olive-green) 0%, var(--forest-green) 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(122, 152, 11, 0.3);
+        }
+
+        .btn-employee-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(122, 152, 11, 0.4);
+            color: white;
+        }
+
+        .btn-employee-secondary {
+            background: var(--white);
+            border: 2px solid var(--text-muted);
+            color: var(--text-muted);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-employee-secondary:hover {
+            border-color: var(--olive-green);
+            color: var(--olive-green);
+            text-decoration: none;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 992px) {
+            .employee-container {
+                flex-direction: column;
+            }
+            
+            .form-buttons {
+                flex-direction: column-reverse;
+                gap: 1rem;
+            }
+            
+            .btn-employee-primary,
+            .btn-employee-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .form-card {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                padding: 1.5rem;
+            }
+            
+            .page-title h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
+
+    <a href="/" class="navbar-brand d-flex align-items-center">
+        <img src="~/img/logo.png" alt="logo"
+             style="height: 100px; width: 100px; margin-right: 10px;">
+    </a>
+
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav py-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="/farminghub" class="nav-item nav-link">Farming Hub</a>
+            <a href="/energymarket" class="nav-item nav-link">Energy Marketplace</a>
+            @if (User.IsInRole("Farmer"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Farmer Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Farmer/Products" class="dropdown-item">My Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employee Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Employee/Farmers" class="dropdown-item">Manage Farmers</a>
+                        <a href="/Employee/Products" class="dropdown-item">Manage Products</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Portal</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/Admin/Employees" class="dropdown-item">Manage Employees</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<div class="container py-4">
+    <div class="employee-container">
+        <!-- Sidebar Navigation -->
+        <div class="employee-sidebar d-none d-lg-block">
+            <div class="sidebar-header">
+                <h4>
+                    <div class="employee-avatar">
+                        <i class="fa fa-user-tie"></i>
+                    </div>
+                    Employee Portal
+                </h4>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Farmers">Farmers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Employee/CreateFarmer">Add New Farmer</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Navigation (for small screens) -->
+        <div class="d-lg-none mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/Employee/Products" class="list-group-item list-group-item-action">Products</a>
+                        <a href="/Employee/Farmers" class="list-group-item list-group-item-action">Farmers</a>
+                        <a href="/Employee/CreateFarmer" class="list-group-item list-group-item-action active">Add New Farmer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="employee-content">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Add New Farmer</h1>
+                <p>Create a new farmer account on the platform</p>
+                <div class="page-divider"></div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <form asp-action="CreateFarmer">
+                    <!-- Validation Summary -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert-validation">
+                            <strong>Please fix the following errors:</strong>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        </div>
+                    }
+
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">Personal Information</h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Firstname" class="form-label">
+                                        First Name <span class="required-indicator">*</span>
+                                    </label>
+                                    <input asp-for="Firstname" class="form-control" placeholder="Enter first name" />
+                                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Lastname" class="form-label">
+                                        Last Name <span class="required-indicator">*</span>
+                                    </label>
+                                    <input asp-for="Lastname" class="form-control" placeholder="Enter last name" />
+                                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">Contact Information</h5>
+
+                        <div class="form-group">
+                            <label asp-for="Email" class="form-label">
+                                Email Address <span class="required-indicator">*</span>
+                            </label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number"
+                                   pattern="^0\d{9}$" title="Phone number must be 10 digits starting with 0" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Location" class="form-label">Location</label>
+                            <input asp-for="Location" class="form-control" placeholder="Enter location" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Account Security Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title">Account Security</h5>
+
+                        <div class="form-group">
+                            <label asp-for="Password" class="form-label">
+                                Password <span class="required-indicator">*</span>
+                            </label>
+                            <div class="password-field-container">
+                                <input asp-for="Password" class="form-control" id="password-field" type="password" placeholder="Enter password" />
+                                <span class="password-toggle" onclick="togglePasswordVisibility('password-field', 'password-toggle-icon')">
+                                    <i class="fa fa-eye" id="password-toggle-icon"></i>
+                                </span>
+                            </div>
+                            <div class="password-strength-meter mt-2">
+                                <div class="password-strength-value" id="passwordStrengthMeter"></div>
+                            </div>
+                            <div class="strength-text" id="passwordStrengthText">Password strength</div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ConfirmPassword" class="form-label">
+                                Confirm Password <span class="required-indicator">*</span>
+                            </label>
+                            <div class="password-field-container">
+                                <input asp-for="ConfirmPassword" class="form-control" id="confirm-password-field" type="password" placeholder="Confirm password" />
+                                <span class="password-toggle" onclick="togglePasswordVisibility('confirm-password-field', 'confirm-password-toggle-icon')">
+                                    <i class="fa fa-eye" id="confirm-password-toggle-icon"></i>
+                                </span>
+                            </div>
+                            <div class="form-text" id="passwordMatchMessage"></div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Form Buttons -->
+                    <div class="form-buttons">
+                        <a asp-action="Farmers" class="btn btn-employee-secondary">Back to Farmers</a>
+                        <button type="submit" class="btn btn-employee-primary">Create Farmer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Function to toggle password visibility
+        function togglePasswordVisibility(fieldId, iconId) {
+            const passwordField = document.getElementById(fieldId);
+            const passwordToggleIcon = document.getElementById(iconId);
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordToggleIcon.classList.remove('fa-eye');
+                passwordToggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordToggleIcon.classList.remove('fa-eye-slash');
+                passwordToggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Password strength checker
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordField = document.getElementById('password-field');
+            const confirmPasswordField = document.getElementById('confirm-password-field');
+            const passwordStrengthMeter = document.getElementById('passwordStrengthMeter');
+            const passwordStrengthText = document.getElementById('passwordStrengthText');
+            const passwordMatchMessage = document.getElementById('passwordMatchMessage');
+            
+            // Check password strength
+            passwordField.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Reset strength meter
+                passwordStrengthMeter.className = 'password-strength-value';
+                
+                if (password.length === 0) {
+                    passwordStrengthMeter.style.width = '0%';
+                    passwordStrengthText.textContent = 'Password strength';
+                    passwordStrengthText.style.color = '#6c757d';
+                    return;
+                }
+                
+                // Length check
+                if (password.length >= 8) {
+                    strength += 1;
+                }
+                
+                // Uppercase check
+                if (password.match(/[A-Z]/)) {
+                    strength += 1;
+                }
+                
+                // Lowercase check
+                if (password.match(/[a-z]/)) {
+                    strength += 1;
+                }
+                
+                // Number check
+                if (password.match(/[0-9]/)) {
+                    strength += 1;
+                }
+                
+                // Special character check
+                if (password.match(/[^a-zA-Z0-9]/)) {
+                    strength += 1;
+                }
+                
+                // Update strength meter
+                if (strength <= 1) {
+                    passwordStrengthMeter.classList.add('strength-weak');
+                    passwordStrengthText.textContent = 'Weak';
+                    passwordStrengthText.style.color = '#dc3545';
+                } 
+                else if (strength <= 2) {
+                    passwordStrengthMeter.classList.add('strength-fair');
+                    passwordStrengthText.textContent = 'Fair';
+                    passwordStrengthText.style.color = '#ffc107';
+                }
+                else if (strength <= 3) {
+                    passwordStrengthMeter.classList.add('strength-good');
+                    passwordStrengthText.textContent = 'Good';
+                    passwordStrengthText.style.color = '#34AD54';
+                }
+                else {
+                    passwordStrengthMeter.classList.add('strength-strong');
+                    passwordStrengthText.textContent = 'Strong';
+                    passwordStrengthText.style.color = '#00AB66';
+                }
+                
+                // Check if passwords match (if confirm field has content)
+                if (confirmPasswordField.value.length > 0) {
+                    checkPasswordsMatch();
+                }
+            });
+            
+            // Check if passwords match
+            confirmPasswordField.addEventListener('input', checkPasswordsMatch);
+            
+            function checkPasswordsMatch() {
+                const password = passwordField.value;
+                const confirmPassword = confirmPasswordField.value;
+                
+                if (confirmPassword.length === 0) {
+                    passwordMatchMessage.textContent = '';
+                    return;
+                }
+                
+                if (password === confirmPassword) {
+                    passwordMatchMessage.textContent = 'Passwords match';
+                    passwordMatchMessage.style.color = '#00AB66';
+                } else {
+                    passwordMatchMessage.textContent = 'Passwords do not match';
+                    passwordMatchMessage.style.color = '#dc3545';
+                }
+            }
+        });
+    </script>
+}
