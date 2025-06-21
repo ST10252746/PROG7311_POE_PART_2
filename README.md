@@ -1,4 +1,4 @@
-<img src="appscreenshots/logo.png" alt="Logo" width="200"/>
+<img src="logo.png" alt="Logo" width="200"/>
 
 # Agri-Energy Connect: Vision for Sustainability
 
