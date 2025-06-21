@@ -32,7 +32,7 @@ Date Accessed: 08 May 2025
 
 using Microsoft.EntityFrameworkCore;                    
 using ST10252746_PROG7311_POE_PART_2.Data;              
-using Microsoft.AspNetCore.Identity;                   
+using Microsoft.AspNetCore.Identity;
 
 namespace ST10252746_PROG7311_POE_PART_2
 {
@@ -59,6 +59,13 @@ namespace ST10252746_PROG7311_POE_PART_2
 
             //Finalize setup and build the app
             var app = builder.Build();
+
+            //Seed Admin user and assign role
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                CreateAdminUserAndRole(services).Wait();
+            }
 
             //If not in development mode, show a user-friendly error page and enforce secure connections
             if (!app.Environment.IsDevelopment())
@@ -92,6 +99,40 @@ namespace ST10252746_PROG7311_POE_PART_2
 
             //Start the app and listen for web requests
             app.Run();
+        }
+        //Method to seed Admin user
+        private static async Task CreateAdminUserAndRole(IServiceProvider serviceProvider)
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            string adminEmail = "adminFatima@gmail.com";
+            string adminPassword = "Admin@123"; 
+            string adminRole = "Admin";
+
+            //Checks if the role exists
+            if (!await roleManager.RoleExistsAsync(adminRole))
+            {
+                await roleManager.CreateAsync(new IdentityRole(adminRole));
+            }
+
+            //Checks if the admin user exists
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
+            {
+                adminUser = new IdentityUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(adminUser, adminRole);
+                }
+            }
         }
     }
 }
