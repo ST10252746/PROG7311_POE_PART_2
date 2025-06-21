@@ -140,10 +140,8 @@ The application has three roles:
   - Description
   - Category
   - Production Date
-  - Life Span
-  - Manufacturer
   - Image
-  - 
+   
 - Can view their own product list
 
 ## 🌐 5. Detailed Functional Features
@@ -162,8 +160,6 @@ The application has three roles:
   - Description
   - Category
   - Production Date
-  - Life Span
-  - Manufacturer
   - Image
     
 - View their list of added products
@@ -174,12 +170,3 @@ The application has three roles:
   - Date range
   - Product type
   - Specific farmer
-
-## 🖼️ 6. Application Flow with Screenshots
-*(Include screenshots of the login screen, employee dashboard, farmer product page, and filtering features here)*
-
-1. **Login Page** – Secure role-based access
-2. **Employee Dashboard** – Add and manage farmers
-3. **Farmer Portal** – Add/view their own products
-4. **Product Filtering** – Employees search by category/date
-
