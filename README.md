@@ -22,7 +22,7 @@ Ensure these are installed:
 ### ✅ Step 2: Clone and Open the Project
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/ST10252746/PROG7311_POE_PART_2.git 
+   git clone https://github.com/ST10252746/PROG7311_POE_PART_2/tree/master
    ```
 2. Open the solution in Visual Studio:
    - Launch Visual Studio → "Open a project or solution" → Select `ST10252746_PROG7311_POE_PART_2.sln`
