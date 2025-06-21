@@ -65,7 +65,7 @@ Ensure these are installed:
 1. **In SSMS**:
    - Connect to your SQL Server instance (usually `.\SQLEXPRESS` or `localhost`)
    - Right-click **Databases** → **Restore Database**
-   - Select **Device** → Add → Browse to the `AgriEnergyConnectDB.bak` file from the repo
+   - Select **Device** → Add → Browse to the `AgriEnergyConnectDB2.bak` file from the repo
    - Click **OK** to restore
 
 2. **Verify the database**:
@@ -89,7 +89,7 @@ Ensure these are installed:
 
 ### ✅ Step 5: Run Database Scripts (If Applicable)
 1. In SSMS:
-   - Open the provided `DatabaseScript.sql` from the repo
+   - Open the provided `database script.sql` from the repo
    - Execute it against the restored database (`AgriEnergyConnectDB2`)
 
 ---
