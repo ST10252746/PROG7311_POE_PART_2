@@ -1,6 +1,7 @@
 <img src="logo.png" alt="Logo" width="200"/>
 
 # Agri-Energy Connect: Vision for Sustainability
+*master branch created for PART 3 - PART 2 web application prototype resubmission - 
 
 South Africa's agriculture is evolving. Agri-Energy Connect is the next step forward - combining farming and clean energy. A digital bridge between farmers and green energy providers in South Africa.
 
