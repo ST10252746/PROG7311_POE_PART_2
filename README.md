@@ -7,7 +7,7 @@ South Africa's agriculture is evolving. Agri-Energy Connect is the next step for
 
 > [![YouTube](https://img.shields.io/badge/Demo%20Video-Watch%20on%20YouTube-red?logo=youtube&logoColor=white)](https://youtu.be/aOyxKV9g2YE)
 
-## Setup Instructions 
+## 🛠️ Setup Instructions 
 
 Follow these steps to set up Agri-Energy Connect **with the pre-configured database**:
 
@@ -19,57 +19,87 @@ Ensure these are installed:
 
 ---
 
-### ✅ Step 2: Clone and Open the Project
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/ST10252746/PROG7311_POE_PART_2/tree/master
+### ✅ Step 1: Clone the Project
+
+You can use either of the two methods to clone the repository.
+
+#### **Method 1: Using Visual Studio**
+
+1. Open Visual Studio.
+2. Under **Get Started**, select **Clone a repository**.
+3. Paste this repository link:
+
    ```
-2. Open the solution in Visual Studio:
-   - Launch Visual Studio → "Open a project or solution" → Select `ST10252746_PROG7311_POE_PART_2.sln`
+   https://github.com/ST10252746/PROG7311_POE_PART_2.git
+   ```
+4. Choose your local folder location.
+5. Click **Clone**.
+
+#### **Method 2: Using Command Line**
+
+1. Open your CLI or terminal.
+2. Navigate to your desired folder.
+3. Run:
+
+   ```bash
+   git clone https://github.com/ST10252746/PROG7311_POE_PART_2.git
+   ```
+4. Open the solution file `ST10252746_PROG7311_POE_PART_2.sln` in Visual Studio.
+5. Restore NuGet packages and build the solution.
 
 ---
 
-### ✅ Step 3: Restore the Database
-1. **In SSMS**:
-   - Connect to your SQL Server instance (usually `.\SQLEXPRESS` or `localhost`)
-   - Right-click **Databases** → **Restore Database**
-   - Select **Device** → Add → Browse to the `AgriEnergyConnectDB2.bak` file from the repo
-   - Click **OK** to restore
+### ✅ Step 2: Restore the Database
 
-2. **Verify the database**:
-   - You should now see `AgriEnergyConnectDB2` in your SSMS databases list
+You can restore the database using either a `.bak` backup file or a SQL script.
 
----
+#### **Method 1: Using Backup File (`AgriEnergyConnectDB2.bak`)**
 
-### ✅ Step 4: Configure the Connection String
-1. In Visual Studio:
-   - Open `appsettings.json`
-   - Replace the connection string with your server details:
-     ```json
-     "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=AgriEnergyConnectDB2;Trusted_Connection=True;MultipleActiveResultSets=true"
-     ```
-   - For local SQL Express, typically use:
-     ```json
-     "Server=.\\SQLEXPRESS;..."
-     ```
+1. Open **SQL Server Management Studio (SSMS)**.
+2. Connect to your SQL Server instance (e.g., `.\SQLEXPRESS` or `localhost`).
+3. Right-click on **Databases** > **Restore Database...**.
+4. Select **Device** > Click `...` > Add the `AgriEnergyConnectDB2.bak` file.
+5. Click **OK** to restore.
+
+#### **Method 2: Using the SQL Script**
+
+1. In SSMS, connect to your server and click **New Query**.
+2. Open the SQL script provided in the repo (e.g., `database script.sql`).
+3. Execute the script to create and populate the database.
+4. Confirm that the `AgriEnergyConnectDB2` database appears in your databases list.
 
 ---
 
-### ✅ Step 5: Run Database Scripts (If Applicable)
-1. In SSMS:
-   - Open the provided `database script.sql` from the repo
-   - Execute it against the restored database (`AgriEnergyConnectDB2`)
+### ✅ Step 3: Update the Connection String
+
+1. Open the project in Visual Studio.
+2. Navigate to the `appsettings.json` file.
+3. Replace the existing connection string with your actual server name:
+
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=AgriEnergyConnectDB2;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+     }
+   }
+   ```
+4. For local setup, your server might be:
+
+   * `.\SQLEXPRESS`
+   * `localhost`
+   * or your machine name (e.g., `DESKTOP-1234\SQLEXPRESS`)
 
 ---
 
-### ✅ Step 6: Run the Application
-1. In Visual Studio:
-   - Press **F5** or the green ▶️ "Start" button
-   - The app will launch at `https://localhost:7171` (port may vary)
+### ✅ Step 4: Run the Application
 
+1. In Visual Studio, press **F5** or click the green ▶️ **Start** button.
+2. The application will run at:
+   `https://localhost:7171` (port may vary)
+   
 ---
 
-### Troubleshooting
+### 🔍 Troubleshooting
 - **Connection issues?** Verify:
   - SQL Server is running (check via SSMS)
   - Your connection string matches your server name
@@ -77,15 +107,14 @@ Ensure these are installed:
 - **Missing dependencies?** Ensure:
   - .NET 8 SDK is installed (`dotnet --list-sdks` in terminal)
   - NuGet packages are restored (right-click solution → "Restore NuGet Packages")
-
----
-    
+   
 ## Application Flow and User Roles
 The application has three roles:
 
 ### Admin
 - Creates Employee and Farmer roles
 - Creates Employee accounts with login credentials
+- Manage Employee profiles through Admin portal
 
 ### Employee
 - Logs in with provided credentials
